@@ -1,0 +1,11 @@
+properties:
+  author:
+    name: Amman Vedi
+    links:
+      main: https://github.com/ammanvedi
+  stylesheets:
+    markdown: styles/markdown.scss
+  markdown:
+    source: mock-markdown
+  output:
+    directory: _generated/
