@@ -1,6 +1,6 @@
 # Stationary (WIP)
 
-Stationary is a too to generate a static blog from markdown files. Its aims are to be;
+Stationary is a dead simple tool to generate a static blog from markdown files. Its aims are to be;
 - Simple to configure
 - Simple to style
 

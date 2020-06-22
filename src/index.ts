@@ -1,9 +1,13 @@
 import path from 'path';
 import yaml from 'js-yaml';
-import marked from 'marked';
+import marked, {Renderer} from 'marked';
 import fs from 'fs';
 import {Config, HtmlString, PageDefinition} from "./types";
 import {removeMdExtension} from "./helpers";
+import Prism from 'prismjs'
+// @ts-ignore
+import loadLanguages from 'prismjs/components/';
+loadLanguages(['graphql', 'typescript', 'javascript', 'jsx', 'tsx', 'json'])
 
 const writeError = (e: Error) => {
     const errorPath = path.join(process.cwd(), '.stationary.log');
@@ -26,9 +30,24 @@ const getAllMarkdownFileNames = (pathName: string): Array<string> => {
 
 }
 
+const overrideRenderers =  {
+    code(code: string, language: string | undefined, isEscaped: boolean): string {
+        if (language) {
+            const highlighted = Prism.highlight(code, Prism.languages[language], language);
+            return `<pre class="language-${language}"><code class="language-${language}">${highlighted}</code></pre>`
+        }
+        return 'Snippet needs language added!!!!'
+    }
+}
+
 const generatePage = (markdownPath: string, config: Config): PageDefinition => {
     const fileContents = fs.readFileSync(markdownPath);
-    const html = marked(fileContents.toString());
+    // @ts-ignore
+    marked.use({renderer: overrideRenderers});
+    const html = `
+        <link rel="stylesheet" href="https://rawgit.com/PrismJS/prism-themes/master/themes/prism-synthwave84.css" />
+        ${marked(fileContents.toString())}
+    `;
 
     return {
         name: removeMdExtension(path.basename(markdownPath)),
