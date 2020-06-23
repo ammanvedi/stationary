@@ -1,12 +1,13 @@
 import path from 'path';
 import yaml from 'js-yaml';
-import marked, {Renderer} from 'marked';
+import marked from 'marked';
 import fs from 'fs';
-import {Config, HtmlString, PageDefinition} from "./types";
-import {removeMdExtension} from "./helpers";
+import {Config, IndexModel, PostMetadata, PostModel, PostPageDefinition} from "./types";
 import Prism from 'prismjs'
+import Handlebars from 'handlebars';
 // @ts-ignore
 import loadLanguages from 'prismjs/components/';
+import {compileSass} from "./helpers";
 loadLanguages(['graphql', 'typescript', 'javascript', 'jsx', 'tsx', 'json'])
 
 const writeError = (e: Error) => {
@@ -40,25 +41,64 @@ const overrideRenderers =  {
     }
 }
 
-const generatePage = (markdownPath: string, config: Config): PageDefinition => {
-    const fileContents = fs.readFileSync(markdownPath);
+const generatePage = (
+    markdownFileContent: string,
+    currentMetadata: PostMetadata,
+    nextMetadata: PostMetadata,
+    previousMetadata: PostMetadata,
+    config: Config,
+    cwd = process.cwd()
+): PostPageDefinition => {
+    const pageTemplatePath = path.join(cwd, config.properties.templates.post);
+    const pageTemplate = fs.readFileSync(pageTemplatePath).toString();
+
+    const stylesPath = path.join(cwd, config.properties.stylesheets.post);
+
     // @ts-ignore
     marked.use({renderer: overrideRenderers});
-    const html = `
-        <link rel="stylesheet" href="https://rawgit.com/PrismJS/prism-themes/master/themes/prism-synthwave84.css" />
-        ${marked(fileContents.toString())}
-    `;
+
+    const postModel: PostModel = {
+        styles: compileSass(stylesPath),
+        content: marked(markdownFileContent),
+        metadata: currentMetadata,
+        nextPost: nextMetadata,
+        previousPost: previousMetadata,
+    }
+    const template = Handlebars.compile(pageTemplate);
+    const html = template(postModel)
 
     return {
-        name: removeMdExtension(path.basename(markdownPath)),
-        html
+        metadata: currentMetadata,
+        html,
     }
 }
 
-const generate = async (config: Config, cwd: string = process.cwd()) => {
+const generatePosts = (config: Config, cwd: string = process.cwd()): Array<PostMetadata> => {
     const markdownDirectory = path.join(cwd, config.properties.markdown.source);
     const markdownFiles = getAllMarkdownFileNames(markdownDirectory);
-    const pages = markdownFiles.map(markdownPath => generatePage(markdownPath, config));
+
+    const postMetadata: Array<PostMetadata> = markdownFiles.map(markdownPath => {
+        const metadataPath = `${markdownPath.split('.')[0]}.yaml`;
+        let metadata: PostMetadata;
+        try {
+            metadata = yaml.safeLoad(fs.readFileSync(metadataPath, 'utf-8'))
+        } catch {
+            throw new Error(`Expected to find metadata file ${metadataPath}`)
+        }
+        return metadata;
+    });
+
+    const pages = markdownFiles.map((markdownPath, ix) => {
+        const fileContents = fs.readFileSync(markdownPath).toString();
+        return generatePage(
+            fileContents,
+            postMetadata[ix],
+            postMetadata[ix + 1] || null,
+            postMetadata[ix - 1] || null,
+            config
+        )
+    });
+
     const outPath = path.resolve(cwd, config.properties.output.directory);
 
     if (!fs.existsSync(outPath)) {
@@ -66,18 +106,44 @@ const generate = async (config: Config, cwd: string = process.cwd()) => {
     }
 
     pages.forEach(p => {
-
-        const outFile = path.join(outPath, `${p.name}.html`)
+        const outFile = path.join(outPath, `${p.metadata.slug}.html`)
         fs.writeFileSync(outFile, p.html);
-    })
+    });
+
+    return postMetadata;
+}
+
+const generateIndex = (config: Config, posts: Array<PostMetadata>, cwd = process.cwd()) => {
+
+    const indexTemplatePath = path.join(cwd, config.properties.templates.index);
+    const indexTemplate = fs.readFileSync(indexTemplatePath).toString();
+    const compiledIndex = Handlebars.compile(indexTemplate);
+
+    const stylesPath = path.join(cwd, config.properties.stylesheets.index);
+
+    const model: IndexModel = {
+        config,
+        styles: compileSass(stylesPath),
+        posts: posts.map(p => ({...p, link: `/${p.slug}.html`}))
+    }
+
+    const html = compiledIndex(model);
+    const outPath = path.resolve(cwd, config.properties.output.directory, 'index.html');
+
+    fs.writeFileSync(outPath, html);
 }
 
 try {
     const configPath = path.join(process.cwd(), 'stationary.config.yaml');
     const cfg = yaml.safeLoad(fs.readFileSync(configPath, 'utf-8'));
-    generate(cfg).then(() => {
-        console.log('Generation Complete!')
-    })
+    const metadata = generatePosts(cfg).sort(({publishDate: aPub}, {publishDate: bPub}) => {
+        const aPubDate = new Date(aPub).getTime();
+        const bPubDate = new Date(bPub).getTime();
+
+        return bPubDate - aPubDate;
+    });
+    generateIndex(cfg, metadata)
+
 } catch (e) {
     console.log('Something went wrong take a look at .stationary.log for more detail');
     writeError(e);

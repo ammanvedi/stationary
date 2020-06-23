@@ -4,8 +4,12 @@ properties:
     links:
       main: https://github.com/ammanvedi
   stylesheets:
-    markdown: styles/markdown.scss
+    post: styles/post.scss
+    index: styles/index.scss
   markdown:
     source: mock-markdown
+  templates:
+    index: templates/index.html
+    post: templates/post.html
   output:
     directory: _generated/

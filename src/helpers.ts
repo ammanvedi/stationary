@@ -1,5 +1,9 @@
-import {TAB} from "./constants";
+import sass from 'node-sass';
+import fs from 'fs';
 
-export const removeMdExtension = (fileName: string): string => fileName.replace(/\.md$/, '');
-
-
+export const compileSass = (filePath: string): string => {
+    const fileContent = fs.readFileSync(filePath).toString();
+    return sass.renderSync({
+        data: fileContent
+    }).css.toString();
+}
