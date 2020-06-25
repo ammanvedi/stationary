@@ -5,4 +5,6 @@ tags:
   - type-theory
 title: flow's type inference quirk
 slug: flow-type-inference-quirk-vs-typescript
-imageUrl: ''
+imageUrl: https://i.imgur.com/AfBYazN.png
+imageUrl2x: https://i.imgur.com/iujKDxG.png
+color: "#5A5CAA"

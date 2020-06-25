@@ -6,6 +6,7 @@ properties:
   stylesheets:
     post: styles/post.scss
     index: styles/index.scss
+    global: styles/global.scss
   markdown:
     source: mock-markdown
   templates:

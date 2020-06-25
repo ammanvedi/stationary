@@ -1,17 +1,65 @@
 <html lang="en">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <title>blog</title>
         <style>
             {{{styles}}}
         </style>
     </head>
     <body>
-        <ul>
-            {{#each posts}}
-                <li>
-                    <a href="{{link}}" >{{title}}</a>
-                </li>
-            {{/each}}
-        </ul>
+    <svg width="0" height="0">
+        <filter id="abb">
+            <feColorMatrix  type="matrix"
+                            result="red_"
+                            values="4 0 0 0 0
+              0 0 0 0 0
+              0 0 0 0 0
+              0 0 0 1 0"/>
+            <feOffset in="red_" dx="1" dy="0" result="red"/>
+            <feColorMatrix type="matrix"
+                           in="SourceGraphic"
+                           result="blue_"
+                           values="0 0 0 0 0
+              0 3 0 0 0
+              0 0 10 0 0
+              0 0 0 1 0"/>
+            <feOffset in="blue_" dx="-2" dy="0" result="blue"/>
+            <feBlend mode="screen" in="red" in2="blue"/>
+
+        </filter>
+    </svg>
+    <div class="home">
+        <div class="home__content">
+            <ul class="post-grid">
+                {{#each posts}}
+                    <li class="post">
+                        <img
+                                loading="lazy"
+                                alt=""
+                                class="post__background-image"
+                                src="https://i.imgur.com/XdXW24O.png"
+                                srcset="{{imageUrl}}, {{imageUrl2x}} 2x"
+                        />
+                        <img
+                                loading="lazy"
+                                alt=""
+                                class="post__background-image post__background-image--aberrated"
+                                src="https://i.imgur.com/XdXW24O.png"
+                                srcset="{{imageUrl}}, {{imageUrl2x}} 2x"
+                        />
+                        <div style="background-color: {{color}};" class="post__gradient-overlay" ></div>
+                        <div class="post__content">
+                            <p class="post__date">{{formattedDate}}</p>
+                            <h2 class="post__title">
+                                {{title}}
+                            </h2>
+                        </div>
+                        <a class="post__link" href="{{link}}"></a>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+
     </body>
 </html>

@@ -29,12 +29,14 @@ export type PostMetadata = {
     title: string,
     slug: string,
     imageUrl: string,
+    imageUrl2x: string,
+    color: string,
 }
 
 export type IndexModel = {
     styles: string,
     config: Config,
-    posts: Array<PostMetadata & {link: string}>
+    posts: Array<PostMetadata & {link: string, formattedDate: string}>
 }
 
 export type PostModel = {

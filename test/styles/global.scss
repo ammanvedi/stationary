@@ -1,0 +1,23 @@
+@import "styles/normalize";
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;600&display=swap');
+
+@mixin roboto-medium {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 500;
+}
+
+@mixin roboto-semibold {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 500;
+}
+
+html {
+  background-color: #2E2E2E;
+  font-size: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+

@@ -124,7 +124,11 @@ const generateIndex = (config: Config, posts: Array<PostMetadata>, cwd = process
     const model: IndexModel = {
         config,
         styles: compileSass(stylesPath),
-        posts: posts.map(p => ({...p, link: `/${p.slug}.html`}))
+        posts: posts.map(p => ({
+            ...p,
+            link: `/${p.slug}.html`,
+            formattedDate: new Date(p.publishDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})
+        }))
     }
 
     const html = compiledIndex(model);

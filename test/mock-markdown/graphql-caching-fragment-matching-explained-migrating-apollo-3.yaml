@@ -5,4 +5,6 @@ tags:
   - javascript
 title: graphql caching, fragment matching and moving towards apollo client 3.0
 slug: graphql-fragment-matching-explained-migrating-to-apollo-client-3
-imageUrl: ''
+imageUrl: https://i.imgur.com/WzYN02R.png
+imageUrl2x: https://i.imgur.com/s47QVum.png
+color: "#AA5A96"

@@ -602,7 +602,7 @@ export interface FragmentMatcherInterface {
 
 This method is very simple and is the default way of fragment matching in Apollo Client. The algorithm plays out as follows;
 
-```
+```javascript
 if value.__typename === typeCondition
 	return true
 else
@@ -611,7 +611,7 @@ else
 
 If the types match exactly then we return true. If not we do something very peculiar, we return `'heuristic'` and the source explains this best
 
-```
+```javascript
 // At this point we don't know if this fragment should match or not. It's
 // either:
 //
@@ -708,7 +708,7 @@ With an `IntrospectionFragmentMatcher` we provide the schema as JSON and with th
 
 The introspective matching algorithm goes as follows
 
-```json
+```javascript
 create possibleTypes map from introspection result JSON
 
 if value.__typename === typeCondition
@@ -825,5 +825,3 @@ export interface FragmentMatcherInterface {
   ): boolean | 'heuristic';
 }
 ```
-
-[Speaker Notes](https://www.notion.so/Speaker-Notes-37ff04ee528c429a8f86f8fe2db8ce92)
