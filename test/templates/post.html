@@ -1,12 +1,28 @@
 <html lang="en">
     <head>
-        <title>blog</title>
-        <link rel="stylesheet" href="https://rawgit.com/PrismJS/prism-themes/master/themes/prism-synthwave84.css" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <title>{{metadata.title}}</title>
+        <link rel="stylesheet" href="https://rawgit.com/PrismJS/prism-themes/master/themes/prism-duotone-earth.css" />
         <style>
                 {{{styles}}}
         </style>
     </head>
     <body>
-        {{{content}}}
+        <div class="blog-post">
+            {{{content}}}
+        </div>
+
+        <ul class="post-grid post-grid--post-page">
+            {{#with previousPost}}
+                {{> postPreview}}
+            {{/with}}
+
+            {{#with nextPost}}
+                {{> postPreview}}
+            {{/with}}
+        </ul>
+
+
     </body>
 </html>

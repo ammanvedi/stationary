@@ -19,6 +19,7 @@ export type Config = {
         templates: {
             index: string,
             post: string,
+            partials: {[key: string]: string}
         }
     }
 }
@@ -33,18 +34,20 @@ export type PostMetadata = {
     color: string,
 }
 
+export type ExtendedPostMetadata = PostMetadata & {link: string, formattedDate: string};
+
 export type IndexModel = {
     styles: string,
     config: Config,
-    posts: Array<PostMetadata & {link: string, formattedDate: string}>
+    posts: Array<ExtendedPostMetadata>
 }
 
 export type PostModel = {
     styles: string,
     metadata: PostMetadata,
     content: string,
-    nextPost: PostMetadata | null,
-    previousPost: PostMetadata | null
+    nextPost: ExtendedPostMetadata | null,
+    previousPost: ExtendedPostMetadata | null
 }
 
 export type HtmlString = string;

@@ -12,5 +12,7 @@ properties:
   templates:
     index: templates/index.html
     post: templates/post.html
+    partials:
+      postPreview: templates/partials/post-preview.html
   output:
     directory: _generated/

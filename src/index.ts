@@ -2,7 +2,7 @@ import path from 'path';
 import yaml from 'js-yaml';
 import marked from 'marked';
 import fs from 'fs';
-import {Config, IndexModel, PostMetadata, PostModel, PostPageDefinition} from "./types";
+import {Config, ExtendedPostMetadata, IndexModel, PostMetadata, PostModel, PostPageDefinition} from "./types";
 import Prism from 'prismjs'
 import Handlebars from 'handlebars';
 // @ts-ignore
@@ -35,7 +35,7 @@ const overrideRenderers =  {
     code(code: string, language: string | undefined, isEscaped: boolean): string {
         if (language) {
             const highlighted = Prism.highlight(code, Prism.languages[language], language);
-            return `<pre class="language-${language}"><code class="language-${language}">${highlighted}</code></pre>`
+            return `<pre class="code-block language-${language}"><code class="language-${language}">${highlighted}</code></pre>`
         }
         return 'Snippet needs language added!!!!'
     }
@@ -61,8 +61,8 @@ const generatePage = (
         styles: compileSass(stylesPath),
         content: marked(markdownFileContent),
         metadata: currentMetadata,
-        nextPost: nextMetadata,
-        previousPost: previousMetadata,
+        nextPost: getExtraMetaDataProps(nextMetadata),
+        previousPost: getExtraMetaDataProps(previousMetadata),
     }
     const template = Handlebars.compile(pageTemplate);
     const html = template(postModel)
@@ -113,6 +113,17 @@ const generatePosts = (config: Config, cwd: string = process.cwd()): Array<PostM
     return postMetadata;
 }
 
+const getExtraMetaDataProps = (meta?: PostMetadata): ExtendedPostMetadata | null => {
+    if (!meta) {
+        return null;
+    }
+    return {
+        ...meta,
+        link: `/${meta.slug}.html`,
+        formattedDate: new Date(meta.publishDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})
+    }
+}
+
 const generateIndex = (config: Config, posts: Array<PostMetadata>, cwd = process.cwd()) => {
 
     const indexTemplatePath = path.join(cwd, config.properties.templates.index);
@@ -125,9 +136,10 @@ const generateIndex = (config: Config, posts: Array<PostMetadata>, cwd = process
         config,
         styles: compileSass(stylesPath),
         posts: posts.map(p => ({
+            link: '/404.html',
+            formattedDate: '',
             ...p,
-            link: `/${p.slug}.html`,
-            formattedDate: new Date(p.publishDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})
+            ...getExtraMetaDataProps(p)
         }))
     }
 
@@ -139,7 +151,15 @@ const generateIndex = (config: Config, posts: Array<PostMetadata>, cwd = process
 
 try {
     const configPath = path.join(process.cwd(), 'stationary.config.yaml');
-    const cfg = yaml.safeLoad(fs.readFileSync(configPath, 'utf-8'));
+    const cfg = yaml.safeLoad(fs.readFileSync(configPath, 'utf-8')) as Config;
+
+    Object.keys(cfg.properties.templates.partials).forEach(partial => {
+        const partialPath = cfg.properties.templates.partials[partial];
+        const partialFullPath = path.join(process.cwd(), partialPath);
+        const partialContent = fs.readFileSync(partialFullPath, 'utf-8');
+        Handlebars.registerPartial(partial, partialContent);
+    })
+
     const metadata = generatePosts(cfg).sort(({publishDate: aPub}, {publishDate: bPub}) => {
         const aPubDate = new Date(aPub).getTime();
         const bPubDate = new Date(bPub).getTime();

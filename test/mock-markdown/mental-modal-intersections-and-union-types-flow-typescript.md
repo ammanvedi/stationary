@@ -50,7 +50,7 @@ My first instinct was always to model them as sets at the definition level, for 
 
 Each type forms a set, the members of which are the properties of the type.
 
-❗️This is a dangerous way to think about it❗️
+**This is a dangerous way to think about it**
 
 Why? Lets look at the definition of a intersection type from the Typescript docs; > # An intersection type combines multiple types into one. This allows you to add together existing types to get a single type that has all the features you need.
 
@@ -68,7 +68,7 @@ Now to enumerate all the possible values of each of these types would probably r
 
 This may seem confusing but remember that an object
 
-```
+```javascript
 { stringProp: 'C', numberProp: 2, objectProp: {} }
 ```
 
@@ -82,7 +82,7 @@ The set will be made up of values that contain all props from TypeX and TypeY
 
 All these will be valid members;
 
-```
+```javascript
 { stringProp: 'C', numberProp: 2, objectProp: {} }
 { stringProp: 'C', numberProp: 3, objectProp: {} }
 { stringProp: 'D', numberProp: 3, objectProp: {}, randomProp: [] }
@@ -90,7 +90,7 @@ All these will be valid members;
 
 The values with only members from one type will not be in the intersection as they only occur in one set
 
-```
+```javascript
 // only in set of possible values for TypeX
 { stringProp: 'A', numberProp: 0 } 
 

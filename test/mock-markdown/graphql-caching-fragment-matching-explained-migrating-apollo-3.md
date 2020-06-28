@@ -1,7 +1,5 @@
 # GraphQL Caching, Fragment Matching and Moving Towards Apollo Client 3.0
 
-# Context
-
 If we have a good understanding about how the cache works we can leverage it to make our code simpler and reduce the number of requests we need to make to our GraphQL services.
 
 In order to best take advantage of the cache on the client side it must be taken into account when designing the schema's types, queries and mutations. Often this is undertaken by a different team so our understanding of the cache should be used to inform decisions on the server side.
@@ -809,19 +807,3 @@ The main take aways are
 - [Full Apollo Client 3.0 changelog - github.com](https://github.com/apollographql/apollo-client/blob/v3.0.0-rc.0/CHANGELOG.md)
 - [Cache Eviction in Apollo Client 3.0 - apollographql.com](https://www.apollographql.com/docs/react/v3.0-beta/caching/cache-interaction/#garbage-collection-and-cache-eviction)
 - [Reasoning behind no longer generating query path ids for non normalised objects - github.com](https://github.com/apollographql/apollo-client/pull/5146)
-
-# Additional Notes
-
-## Full Fragment Matcher Interface (Apollo 2.6)
-
-This is the actual interface the one shown in the fragment matching section has been simplified for ease of explanation.
-
-```jsx
-export interface FragmentMatcherInterface {
-  match(
-    idValue: IdValue,
-    typeCondition: string,
-    context: ReadStoreContext,
-  ): boolean | 'heuristic';
-}
-```
