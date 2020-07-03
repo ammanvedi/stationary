@@ -1,0 +1,7 @@
+{
+  "readVersionCommand": "node -p \"require('./package.json').version\" | tr -d '\n'",
+  "writeVersionCommands": ["npm version {{version}} --no-git-tag-version"],
+  "preReleaseStart": [],
+  "postReleaseStart": [],
+  "postReleaseFinish": []
+}
