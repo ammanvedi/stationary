@@ -1,6 +1,6 @@
 {
   "name": "stationary-md",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Static site generator that takes markdown as input",
   "main": "dist/index.js",
   "scripts": {
