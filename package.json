@@ -4,9 +4,12 @@
   "description": "Static site generator that takes markdown as input",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x build/index.js",
     "mock": "cd test && node ../build/index.js",
     "serve-mock": "cd test/_generated && python -m SimpleHTTPServer 6003"
+  },
+  "bin": {
+    "stationary": "./build/index.js"
   },
   "author": "amman.vedi@gmail.com",
   "license": "MIT",

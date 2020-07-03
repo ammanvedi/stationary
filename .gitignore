@@ -1,7 +1,7 @@
 node_modules
 test/_generated/
 test/.stationary.log
-build
 .idea
 .embark.failure.log
 .embark.plan.log
+.stationary.log

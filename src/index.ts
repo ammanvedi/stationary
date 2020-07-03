@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import path from 'path';
 import yaml from 'js-yaml';
 import marked from 'marked';
