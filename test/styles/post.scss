@@ -16,12 +16,13 @@ $text-color: #212121;
 
 .blog-post {
   max-width: 680px;
-  margin: 0 auto;
   color: $text-color;
   padding: 16px;
+  margin: 0 auto;
 
   @media screen and (min-width: $bp-tablet) {
    padding: 0;
+    margin: 50px auto 0;
   }
 
   h1 {
