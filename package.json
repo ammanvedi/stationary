@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "mock": "cd test && node ../build/index.js",
-    "serve-test": "cd test/_generated && python -m SimpleHTTPServer 6003"
+    "serve-mock": "cd test/_generated && python -m SimpleHTTPServer 6003"
   },
   "author": "amman.vedi@gmail.com",
   "license": "MIT",

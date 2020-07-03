@@ -1,11 +1,11 @@
 @import "styles/global";
 @import "styles/variables";
 
-$text-color: #F6F6F6;
+$text-color: #212121;
 
 .code-block {
   padding: 20px !important;
-  border-radius: 10px !important;
+  border-radius: 4px !important;
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, .24), 0px 1px 3px 0px rgba(0, 0, 0, .12);
 
   @media screen and (min-width: $bp-tablet) {
@@ -47,6 +47,12 @@ $text-color: #F6F6F6;
     }
   }
 
+  code:not([class^='language-']) {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1px 3px 2px;
+    border-radius: 4px;
+  }
+
   h2 {
     @include roboto-semibold;
     font-size: 2.3rem;
@@ -62,15 +68,27 @@ $text-color: #F6F6F6;
 
   h3 {
     @include roboto-medium;
-    font-size: 1.8rem;
-    letter-spacing: -.35px;
-    line-height: 1.6;
-    opacity: .8;
+    font-size: 2.3rem;
+    letter-spacing: -.45px;
+    line-height: 1.39;
+    opacity: .6;
 
     @media screen and (min-width: $bp-tablet) {
       font-size: 2.3rem;
       letter-spacing: -.45px;
       line-height: 1.4;
+    }
+  }
+
+  blockquote {
+    padding: 0 32px;
+    margin: 0;
+    border-left: 6px solid #f9c1049e;
+
+    p {
+      font-size: 2.1rem;
+      font-style: italic;
+      margin: 0;
     }
   }
 
@@ -88,7 +106,7 @@ $text-color: #F6F6F6;
     letter-spacing: .5px;
 
     @media screen and (min-width: $bp-tablet) {
-      line-height: 1.7;
+      line-height: 2;
       font-size: 2.1rem;
     }
   }
@@ -105,6 +123,6 @@ $text-color: #F6F6F6;
 
   img {
     width: 100%;
-    border-radius: 6px;
+    border-radius: 4px;
   }
 }
