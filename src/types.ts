@@ -1,3 +1,9 @@
+export type ExtraPageDef = {
+    template: string,
+    stylesheet: string,
+    slug: string,
+}
+
 export type Config = {
     properties: {
         author: {
@@ -20,7 +26,8 @@ export type Config = {
             index: string,
             post: string,
             partials: {[key: string]: string}
-        }
+        },
+        extra?: Array<ExtraPageDef>
     }
 }
 

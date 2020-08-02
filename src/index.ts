@@ -4,7 +4,15 @@ import path from 'path';
 import yaml from 'js-yaml';
 import marked from 'marked';
 import fs from 'fs';
-import {Config, ExtendedPostMetadata, IndexModel, PostMetadata, PostModel, PostPageDefinition} from "./types";
+import {
+    Config,
+    ExtendedPostMetadata,
+    ExtraPageDef,
+    IndexModel,
+    PostMetadata,
+    PostModel,
+    PostPageDefinition
+} from "./types";
 import Prism from 'prismjs'
 import Handlebars from 'handlebars';
 // @ts-ignore
@@ -126,6 +134,27 @@ const getExtraMetaDataProps = (meta?: PostMetadata): ExtendedPostMetadata | null
     }
 }
 
+const generateExtraPages = (config: Config, pages: Array<ExtraPageDef>, cwd = process.cwd()) => {
+    pages.forEach(pageConf => {
+        const indexTemplatePath = path.join(cwd, pageConf.template);
+        const indexTemplate = fs.readFileSync(indexTemplatePath).toString();
+        const compiledIndex = Handlebars.compile(indexTemplate);
+
+        const stylesPath = path.join(cwd, pageConf.stylesheet);
+
+
+        const model = {
+            styles: compileSass(stylesPath),
+        }
+
+        const html = compiledIndex(model);
+        const outPath = path.resolve(cwd, config.properties.output.directory, `${pageConf.slug}.html`);
+
+        fs.writeFileSync(outPath, html);
+
+    })
+}
+
 const generateIndex = (config: Config, posts: Array<PostMetadata>, cwd = process.cwd()) => {
 
     const indexTemplatePath = path.join(cwd, config.properties.templates.index);
@@ -169,6 +198,10 @@ try {
         return bPubDate - aPubDate;
     });
     generateIndex(cfg, metadata)
+    if (cfg.properties.extra) {
+        generateExtraPages(cfg, cfg.properties.extra);
+    }
+
 
 } catch (e) {
     console.log('Something went wrong take a look at .stationary.log for more detail');

@@ -22,6 +22,10 @@ properties:
     post: templates/post.html
   output:
     directory: _generated/
+  extra:
+    - template: templates/extra.html
+      stylesheet: styles/extra.scss
+      slug: test-extra
 ```
 
 ## Markdown
@@ -72,6 +76,10 @@ export type PostModel = {
     previousPost: PostMetadata | null
 }
 ```
+
+## Examples
+
+You can see a complete example usage in the `test/` folder
 
 ## Developing
 

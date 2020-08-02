@@ -14,5 +14,9 @@ properties:
     post: templates/post.html
     partials:
       postPreview: templates/partials/post-preview.html
+  extra:
+    - template: templates/extra.html
+      stylesheet: styles/extra.scss
+      slug: test-extra
   output:
-    directory: _generated/
+    directory: _example/
