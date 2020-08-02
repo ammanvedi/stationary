@@ -1,0 +1,1137 @@
+<html lang="en">
+    <head>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <title>graphql caching, fragment matching and moving towards apollo client 3.0</title>
+        <link rel="stylesheet" href="https://rawgit.com/PrismJS/prism-themes/master/themes/prism-duotone-earth.css" />
+        <style>
+                /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+/* Document
+   ========================================================================== */
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;600&display=swap");
+html {
+  line-height: 1.15;
+  /* 1 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */ }
+
+/* Sections
+   ========================================================================== */
+/**
+ * Remove the margin in all browsers.
+ */
+body {
+  margin: 0; }
+
+/**
+ * Render the `main` element consistently in IE.
+ */
+main {
+  display: block; }
+
+/**
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0; }
+
+/* Grouping content
+   ========================================================================== */
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+hr {
+  box-sizing: content-box;
+  /* 1 */
+  height: 0;
+  /* 1 */
+  overflow: visible;
+  /* 2 */ }
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+pre {
+  font-family: monospace, monospace;
+  /* 1 */
+  font-size: 1em;
+  /* 2 */ }
+
+/* Text-level semantics
+   ========================================================================== */
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+a {
+  background-color: transparent; }
+
+/**
+ * 1. Remove the bottom border in Chrome 57-
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+abbr[title] {
+  border-bottom: none;
+  /* 1 */
+  text-decoration: underline;
+  /* 2 */
+  text-decoration: underline dotted;
+  /* 2 */ }
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+b,
+strong {
+  font-weight: bolder; }
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+code,
+kbd,
+samp {
+  font-family: monospace, monospace;
+  /* 1 */
+  font-size: 1em;
+  /* 2 */ }
+
+/**
+ * Add the correct font size in all browsers.
+ */
+small {
+  font-size: 80%; }
+
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline; }
+
+sub {
+  bottom: -0.25em; }
+
+sup {
+  top: -0.5em; }
+
+/* Embedded content
+   ========================================================================== */
+/**
+ * Remove the border on images inside links in IE 10.
+ */
+img {
+  border-style: none; }
+
+/* Forms
+   ========================================================================== */
+/**
+ * 1. Change the font styles in all browsers.
+ * 2. Remove the margin in Firefox and Safari.
+ */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  /* 1 */
+  font-size: 100%;
+  /* 1 */
+  line-height: 1.15;
+  /* 1 */
+  margin: 0;
+  /* 2 */ }
+
+/**
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
+ */
+button,
+input {
+  /* 1 */
+  overflow: visible; }
+
+/**
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
+button,
+select {
+  /* 1 */
+  text-transform: none; }
+
+/**
+ * Correct the inability to style clickable types in iOS and Safari.
+ */
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button; }
+
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0; }
+
+/**
+ * Restore the focus styles unset by the previous rule.
+ */
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  outline: 1px dotted ButtonText; }
+
+/**
+ * Correct the padding in Firefox.
+ */
+fieldset {
+  padding: 0.35em 0.75em 0.625em; }
+
+/**
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
+legend {
+  box-sizing: border-box;
+  /* 1 */
+  color: inherit;
+  /* 2 */
+  display: table;
+  /* 1 */
+  max-width: 100%;
+  /* 1 */
+  padding: 0;
+  /* 3 */
+  white-space: normal;
+  /* 1 */ }
+
+/**
+ * Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
+progress {
+  vertical-align: baseline; }
+
+/**
+ * Remove the default vertical scrollbar in IE 10+.
+ */
+textarea {
+  overflow: auto; }
+
+/**
+ * 1. Add the correct box sizing in IE 10.
+ * 2. Remove the padding in IE 10.
+ */
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box;
+  /* 1 */
+  padding: 0;
+  /* 2 */ }
+
+/**
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto; }
+
+/**
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
+[type="search"] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  outline-offset: -2px;
+  /* 2 */ }
+
+/**
+ * Remove the inner padding in Chrome and Safari on macOS.
+ */
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none; }
+
+/**
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  /* 1 */
+  font: inherit;
+  /* 2 */ }
+
+/* Interactive
+   ========================================================================== */
+/*
+ * Add the correct display in Edge, IE 10+, and Firefox.
+ */
+details {
+  display: block; }
+
+/*
+ * Add the correct display in all browsers.
+ */
+summary {
+  display: list-item; }
+
+/* Misc
+   ========================================================================== */
+/**
+ * Add the correct display in IE 10+.
+ */
+template {
+  display: none; }
+
+/**
+ * Add the correct display in IE 10.
+ */
+[hidden] {
+  display: none; }
+
+.post-grid {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+  align-items: stretch; }
+  .post-grid .post {
+    flex: 0 1 100%; }
+    @media screen and (min-width: 460px) {
+      .post-grid .post {
+        flex: 1 1 40%; } }
+  @media screen and (min-width: 768px) {
+    .post-grid--post-page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 10px 0 80px; } }
+
+html {
+  background-color: #efefef;
+  font-size: 10px; }
+
+* {
+  box-sizing: border-box; }
+
+.post {
+  min-height: 184px;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #FFD4D4;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.24), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  transition: .2s ease-out transform;
+  margin: 10px; }
+  .post:hover, .post:focus, .post:focus-within {
+    transform: translateY(-3px); }
+    .post:hover .post__background-image, .post:focus .post__background-image, .post:focus-within .post__background-image {
+      opacity: 0; }
+    .post:hover .post__title, .post:focus .post__title, .post:focus-within .post__title {
+      text-decoration: underline; }
+    .post:hover .post__background-image--aberrated, .post:focus .post__background-image--aberrated, .post:focus-within .post__background-image--aberrated {
+      opacity: 1; }
+  .post__link, .post__background-image, .post__gradient-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0; }
+  .post__link {
+    display: block;
+    cursor: pointer;
+    z-index: 3; }
+  .post__background-image, .post__gradient-overlay {
+    z-index: 1; }
+  .post__content {
+    position: relative;
+    padding: 16px;
+    z-index: 2; }
+  .post__background-image {
+    object-fit: cover;
+    object-position: bottom left;
+    width: 100%;
+    height: 100%;
+    transition: .2s ease-out opacity;
+    opacity: 1; }
+    .post__background-image--aberrated {
+      opacity: 0;
+      -webkit-filter: url(#abb); }
+  .post__gradient-overlay {
+    background-color: #AA5A96;
+    opacity: .46; }
+  .post__date, .post__title {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    color: #fff; }
+  .post__date {
+    margin: 0;
+    font-size: 1.3rem;
+    opacity: .75;
+    line-height: 1.4; }
+  .post__title {
+    margin-top: 14px;
+    line-height: 1.35;
+    font-size: 2.1rem; }
+
+.code-block {
+  padding: 20px !important;
+  border-radius: 4px !important;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.24), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); }
+  @media screen and (min-width: 768px) {
+    .code-block {
+      padding: 30px !important;
+      border-radius: 14px !important; } }
+
+.blog-post {
+  max-width: 680px;
+  color: #212121;
+  padding: 16px;
+  margin: 0 auto; }
+  @media screen and (min-width: 768px) {
+    .blog-post {
+      padding: 0;
+      margin: 50px auto 0; } }
+  .blog-post h1 {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    font-size: 3rem;
+    letter-spacing: -.58px;
+    line-height: 1.3; }
+    @media screen and (min-width: 768px) {
+      .blog-post h1 {
+        font-size: 3.6rem;
+        letter-spacing: -.7px;
+        line-height: 1.3; } }
+    @media screen and (min-width: 768px) {
+      .blog-post h1:first-child {
+        font-size: 4rem;
+        letter-spacing: -.7px;
+        line-height: 1.4; } }
+  .blog-post code:not([class^='language-']) {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1px 3px 2px;
+    border-radius: 4px; }
+  .blog-post h2 {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    font-size: 2.3rem;
+    letter-spacing: -.45px;
+    line-height: 1.39; }
+    @media screen and (min-width: 768px) {
+      .blog-post h2 {
+        font-size: 2.7rem;
+        letter-spacing: -.53px;
+        line-height: 1.18; } }
+  .blog-post h3 {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    font-size: 2.3rem;
+    letter-spacing: -.45px;
+    line-height: 1.39;
+    opacity: .6; }
+    @media screen and (min-width: 768px) {
+      .blog-post h3 {
+        font-size: 2.3rem;
+        letter-spacing: -.45px;
+        line-height: 1.4; } }
+  .blog-post blockquote {
+    padding: 0 32px;
+    margin: 0;
+    border-left: 6px solid #f9c1049e; }
+    .blog-post blockquote p {
+      font-size: 2.1rem;
+      font-style: italic;
+      margin: 0; }
+  .blog-post p,
+  .blog-post ul,
+  .blog-post li,
+  .blog-post a,
+  .blog-post a:visited,
+  .blog-post a:-webkit-any-link {
+    opacity: .9;
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+    font-size: 1.8rem;
+    color: #212121;
+    letter-spacing: .5px; }
+    @media screen and (min-width: 768px) {
+      .blog-post p,
+      .blog-post ul,
+      .blog-post li,
+      .blog-post a,
+      .blog-post a:visited,
+      .blog-post a:-webkit-any-link {
+        line-height: 2;
+        font-size: 2.1rem; } }
+  .blog-post code {
+    line-height: 1.6;
+    font-size: 1.8rem; }
+    @media screen and (min-width: 768px) {
+      .blog-post code {
+        line-height: 1.5;
+        font-size: 2.1rem; } }
+  .blog-post img {
+    width: 100%;
+    border-radius: 4px; }
+
+        </style>
+    </head>
+    <body>
+        <div class="blog-post">
+            <h1 id="graphql-caching-fragment-matching-and-moving-towards-apollo-client-30">GraphQL Caching, Fragment Matching and Moving Towards Apollo Client 3.0</h1>
+<p>If we have a good understanding about how the cache works we can leverage it to make our code simpler and reduce the number of requests we need to make to our GraphQL services.</p>
+<p>In order to best take advantage of the cache on the client side it must be taken into account when designing the schema&#39;s types, queries and mutations. Often this is undertaken by a different team so our understanding of the cache should be used to inform decisions on the server side.</p>
+<p>Currently the stable version of Apollo Client React sits at major version 2. This version enables several methods for caching and more specifically fragment matching. The goal here is to explain</p>
+<ol>
+<li>GraphQL basics</li>
+<li>How the Apollo Client cache works in general</li>
+<li>What is fragment matching and how it works in Apollo client 2.x</li>
+<li>The move away from explicit fragment matchers to possibleTypes in Apollo Client React 3.0</li>
+<li>What changes need to be made for a migration from 2.0 to 3.0</li>
+</ol>
+<h1 id="examples-repository">Examples Repository</h1>
+<p><a href="https://github.com/ammanvedi/graphql-cache-playground">The examples in this post can be run in a standalone playground that can be found here</a> </p>
+<h1 id="the-schema-and-types">The Schema and Types</h1>
+<p>Lets take a look at an example schema</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token comment"># We have interfaces</span>
+<span class="token keyword">interface</span> <span class="token class-name">Node</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">id</span><span class="token punctuation">:</span> ID<span class="token operator">!</span>
+    <span class="token attr-name">name</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># Enums too</span>
+<span class="token keyword">enum</span> <span class="token class-name">PokemonType</span> <span class="token punctuation">{</span>
+    <span class="token constant">GRASS</span>
+    <span class="token constant">WATER</span>
+    <span class="token constant">FIRE</span>
+    <span class="token constant">ICE</span>
+    <span class="token constant">ELECTRIC</span>
+    <span class="token constant">PSYCHIC</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># Types declaration, this type implements the interface declared earlier</span>
+<span class="token keyword">type</span> <span class="token class-name">Pokemon</span> <span class="token keyword">implements</span> <span class="token class-name">Node</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">id</span><span class="token punctuation">:</span> ID<span class="token operator">!</span> <span class="token comment"># a special type for referring to an objects ID</span>
+    <span class="token attr-name">name</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+    <span class="token attr-name">type</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>PokemonType<span class="token operator">!</span><span class="token punctuation">]</span><span class="token operator">!</span> <span class="token comment"># a ! indicates that the field is non nullable</span>
+    <span class="token attr-name">hp</span><span class="token punctuation">:</span> Int<span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># Normal types like this are referred to as concrete types as they</span>
+<span class="token comment"># are set in stone, this differentiates them from interfaces which</span>
+<span class="token comment"># can be extended</span>
+<span class="token keyword">type</span> <span class="token class-name">Trainer</span> <span class="token keyword">implements</span> <span class="token class-name">Node</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">id</span><span class="token punctuation">:</span> ID<span class="token operator">!</span>
+    <span class="token attr-name">name</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+    <span class="token attr-name">hometown</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># Here we have a union type, in this case Character could either</span>
+<span class="token comment"># be Pokemon or Trainer.</span>
+<span class="token keyword">union</span> <span class="token class-name">Character</span> <span class="token operator">=</span> Pokemon <span class="token operator">|</span> Trainer
+
+<span class="token keyword">enum</span> <span class="token class-name">PotionType</span> <span class="token punctuation">{</span>
+    <span class="token constant">HEALTH</span>
+    <span class="token constant">ENERGY</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Potion</span> <span class="token keyword">implements</span> <span class="token class-name">Node</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">id</span><span class="token punctuation">:</span> ID<span class="token operator">!</span>
+    <span class="token attr-name">name</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+    <span class="token attr-name">potionType</span><span class="token punctuation">:</span> PotionType<span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">enum</span> <span class="token class-name">BallType</span> <span class="token punctuation">{</span>
+    <span class="token constant">NORMAL</span>
+    <span class="token constant">MASTER</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Pokeball</span> <span class="token keyword">implements</span> <span class="token class-name">Node</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">id</span><span class="token punctuation">:</span> ID<span class="token operator">!</span>
+    <span class="token attr-name">name</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+    <span class="token attr-name">count</span><span class="token punctuation">:</span> Int<span class="token operator">!</span>
+    <span class="token attr-name">ballType</span><span class="token punctuation">:</span> BallType<span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">union</span> <span class="token class-name">InventoryItem</span> <span class="token operator">=</span> Pokeball <span class="token operator">|</span> Potion
+
+<span class="token keyword">type</span> <span class="token class-name">Pokedex</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">lastSeenPokemon</span><span class="token punctuation">:</span> Pokemon
+    <span class="token attr-name">totalSeenPokemon</span><span class="token punctuation">:</span> Int<span class="token operator">!</span>
+    <span class="token attr-name">items</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>InventoryItem<span class="token operator">!</span><span class="token punctuation">]</span><span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># This is our root query type, it defines all the operations</span>
+<span class="token comment"># that are available to fetch data. Declarations within are</span>
+<span class="token comment"># very similar to function signitures in many typed languages</span>
+<span class="token keyword">type</span> <span class="token class-name">Query</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">pokedex</span><span class="token punctuation">:</span> Pokedex
+    <span class="token attr-name">characters</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>Character<span class="token operator">!</span><span class="token punctuation">]</span><span class="token operator">!</span>
+    <span class="token attr-name">pokemon</span><span class="token punctuation">(</span><span class="token attr-name">type</span><span class="token punctuation">:</span> PokemonType<span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>Pokemon<span class="token operator">!</span><span class="token punctuation">]</span><span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment"># Input types have distinct declarations</span>
+<span class="token comment"># From the spec:</span>
+<span class="token comment"># Object types can contain fields that define arguments or contain </span>
+<span class="token comment"># references to interfaces and unions, neither of which is appropriate</span>
+<span class="token comment"># for use as an input argument. </span>
+
+<span class="token keyword">input</span> SetPokemonFields <span class="token punctuation">{</span>
+    <span class="token attr-name">name</span><span class="token punctuation">:</span> String
+    <span class="token attr-name">type</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>PokemonType<span class="token operator">!</span><span class="token punctuation">]</span>
+    <span class="token attr-name">hp</span><span class="token punctuation">:</span> Int
+<span class="token punctuation">}</span>
+
+<span class="token comment"># Our root mutation type, declares all operations available to </span>
+<span class="token comment"># change data</span>
+<span class="token keyword">type</span> <span class="token class-name">Mutation</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">updatePokemon</span><span class="token punctuation">(</span><span class="token attr-name">id</span><span class="token punctuation">:</span> ID<span class="token operator">!</span><span class="token punctuation">,</span> <span class="token attr-name">set</span><span class="token punctuation">:</span> SetPokemonFields<span class="token operator">!</span><span class="token punctuation">)</span><span class="token punctuation">:</span> Pokemon
+<span class="token punctuation">}</span></code></pre><h1 id="the-cache">The Cache</h1>
+<h2 id="why-do-we-need-the-cache">Why do we Need the Cache?</h2>
+<h3 id="reducing-number-of-calls-to-endpoints">Reducing Number Of Calls to Endpoints</h3>
+<p>By leveraging the cache in combination with a fetchPolicy we can prevent repeating queries that we have already made;</p>
+<p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/reduce_calls.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/reduce_calls.png"></p>
+<p>Components A and B both use a fetchPolicy of cache-first, we initially request the data for component A but we can pull it from the cache when requesting component B.</p>
+<h3 id="keeping-client-and-server-state-in-sync">Keeping Client and Server State in Sync</h3>
+<p>When we make a request containing a mutation, our data&#39;s state will change. We need to reflect this on the client side. If we return the data that has updated our cache can handle broadcasting this update to relevant components.</p>
+<p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/state_parity.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/state_parity.png"></p>
+<p>We mutate X the updated X value is reflected in all components that use it, a behaviour that most web applications require. With a properly designed schema it comes for free.</p>
+<h1 id="how-does-the-cache-work">How Does The Cache Work</h1>
+<h2 id="overall-structure">Overall Structure</h2>
+<p>The Apollo Cache conforms to a pretty simple interface;</p>
+<pre class="code-block language-jsx"><code class="language-jsx"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">NormalizedCache</span> <span class="token punctuation">{</span>
+  <span class="token keyword">get</span><span class="token punctuation">(</span>dataId<span class="token operator">:</span> string<span class="token punctuation">)</span><span class="token operator">:</span> StoreObject<span class="token punctuation">;</span>
+  <span class="token keyword">set</span><span class="token punctuation">(</span>dataId<span class="token operator">:</span> string<span class="token punctuation">,</span> value<span class="token operator">:</span> StoreObject<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+  <span class="token keyword">delete</span><span class="token punctuation">(</span>dataId<span class="token operator">:</span> string<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+  <span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+  <span class="token function">toObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> NormalizedCacheObject<span class="token punctuation">;</span>
+  <span class="token function">replace</span><span class="token punctuation">(</span>newData<span class="token operator">:</span> NormalizedCacheObject<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre><p>This enables you to implement the cache in any way that you see fit as long as you conform to this interface. In the case of InMemoryCache for example the cache is just a simple object stored in memory. </p>
+<h2 id="cache-keys-and-automatic-updates">Cache Keys and Automatic Updates</h2>
+<p>In order to store data in the cache each object needs to have a key that can be calculated again in the future deterministically. The first level of caching happens at the query and mutation level</p>
+<p>Lets look at the simplest possible example, we make this query</p>
+<p><strong><em>Please note: the representations of the cache are based on the actual cache object (which can be viewed using cache.extract() in Apollo Client 3, rather than what is seen in Apollo dev tools)</em></strong></p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token keyword">query</span> PokedexQuery <span class="token punctuation">{</span>
+    pokedex <span class="token punctuation">{</span>
+        totalSeenPokemon
+        lastSeenPokemon <span class="token punctuation">{</span>
+            hp
+            name
+            <span class="token keyword">type</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>And we get this result</p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+   <span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      <span class="token property">"pokedex"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                 <span class="token property">"totalSeenPokemon"</span><span class="token operator">:</span> <span class="token number">100</span><span class="token punctuation">,</span>
+         <span class="token property">"lastSeenPokemon"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+            <span class="token property">"name"</span><span class="token operator">:</span><span class="token string">"Dragonite"</span><span class="token punctuation">,</span>
+            <span class="token property">"type"</span><span class="token operator">:</span><span class="token punctuation">[</span>
+               <span class="token string">"FIRE"</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">"hp"</span><span class="token operator">:</span><span class="token number">100</span><span class="token punctuation">,</span>
+            <span class="token property">"__typename"</span><span class="token operator">:</span><span class="token string">"Pokemon"</span>
+         <span class="token punctuation">}</span><span class="token punctuation">,</span>
+         <span class="token property">"__typename"</span><span class="token operator">:</span><span class="token string">"Pokedex"</span>
+      <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>It will be stored in the cache as </p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"ROOT_QUERY"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Query"</span><span class="token punctuation">,</span>
+    <span class="token property">"pokedex"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Pokedex"</span><span class="token punctuation">,</span>
+            <span class="token property">"totalSeenPokemon"</span><span class="token operator">:</span> <span class="token number">100</span><span class="token punctuation">,</span>
+      <span class="token property">"lastSeenPokemon"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Pokemon"</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Dragonite"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"FIRE"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"hp"</span><span class="token operator">:</span> <span class="token number">100</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>If we were to visualise this as a graph we would see;</p>
+<p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_16.59.38.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_16.59.38.png"></p>
+<p>Lets spice things up a bit, lets now add in some parameters to the query and also lets make a query where we are returned an array;</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token keyword">query</span> PokemonQuery <span class="token punctuation">{</span>
+    pokemon<span class="token punctuation">(</span><span class="token attr-name">type</span><span class="token punctuation">:</span> <span class="token constant">ELECTRIC</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        name<span class="token punctuation">,</span>
+        <span class="token keyword">type</span><span class="token punctuation">,</span>
+        hp
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>and then we get the following result</p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+   <span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      <span class="token property">"pokemon"</span><span class="token operator">:</span><span class="token punctuation">[</span>
+         <span class="token punctuation">{</span>
+            <span class="token property">"name"</span><span class="token operator">:</span><span class="token string">"Pikachu"</span><span class="token punctuation">,</span>
+            <span class="token property">"type"</span><span class="token operator">:</span><span class="token punctuation">[</span>
+               <span class="token string">"ELECTRIC"</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">"hp"</span><span class="token operator">:</span><span class="token number">100</span><span class="token punctuation">,</span>
+            <span class="token property">"__typename"</span><span class="token operator">:</span><span class="token string">"Pokemon"</span>
+         <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+   <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>This will be stored in the cache as</p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"ROOT_QUERY"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Query"</span><span class="token punctuation">,</span>
+    <span class="token property">"pokemon({\"type\":\"ELECTRIC\"})"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Pokemon"</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Pikachu"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"ELECTRIC"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"hp"</span><span class="token operator">:</span> <span class="token number">100</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>And visualised;</p>
+<p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.02.39.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.02.39.png"></p>
+<p>We should notice the following things about the way these have been stored;</p>
+<ol>
+<li>Objects are explicitly related to the query that requested them via their position in the cache</li>
+<li>The object key includes variables that are part of the query</li>
+</ol>
+<p>Now what if we know Pikachu has an id of &quot;3&quot; and we have a mutation in our schema that will make an update to this Pokemon;</p>
+<pre class="code-block language-json"><code class="language-json">mutation UpdatePokemon <span class="token punctuation">{</span>
+    updatePokemon(id<span class="token operator">:</span> <span class="token string">"3"</span><span class="token punctuation">,</span> set<span class="token operator">:</span> <span class="token punctuation">{</span> hp<span class="token operator">:</span> <span class="token number">800</span> <span class="token punctuation">}</span>) <span class="token punctuation">{</span>
+        hp
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>Because we are lazy we want the following to be done for us when we make this mutation</p>
+<ol>
+<li>Data to be updated and stored in the cache</li>
+<li>Any components that reference this data, for example the one using our initial query, to be updated and re rendered.</li>
+</ol>
+<p>But we have a problem with that. As we found before the data was stored with the query that selected it  so somehow when we receive our response we need to be able to locate our current pikachu data in the cache and update it.</p>
+<p>But at the moment we do not have enough information to do that, the mutation is completely independent of that query. If we were to make that mutation our cache would end up looking like this;</p>
+<p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.05.20.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.05.20.png"></p>
+<p>Because we dont have enough information in the response data to tell Apollo how to find the already existing data and update it.</p>
+<p>We need to de couple the data from the query by giving it a cache key that we are able to re calculate later.</p>
+<p>To do this lets see what happens when we include the Pokemon&#39;s id in our query</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token keyword">query</span> PokemonQuery <span class="token punctuation">{</span>
+    pokemon<span class="token punctuation">(</span><span class="token attr-name">type</span><span class="token punctuation">:</span> <span class="token constant">ELECTRIC</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        id<span class="token punctuation">,</span>
+        name<span class="token punctuation">,</span>
+        <span class="token keyword">type</span><span class="token punctuation">,</span>
+        hp
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>As if by magic our data is now stored in the cache as </p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"Pokemon:3"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"3"</span><span class="token punctuation">,</span>
+    <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Pokemon"</span><span class="token punctuation">,</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Pikachu"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token string">"ELECTRIC"</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"hp"</span><span class="token operator">:</span> <span class="token number">100</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"ROOT_QUERY"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Query"</span><span class="token punctuation">,</span>
+    <span class="token property">"pokemon({\"type\":\"ELECTRIC\"})"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"__ref"</span><span class="token operator">:</span> <span class="token string">"Pokemon:3"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.07.11.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.07.11.png"></p>
+<p>Now that we have an ID our object is no longer keyed by the query path, and if we update our mutation to include the id also</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token keyword">mutation</span> UpdatePokemon <span class="token punctuation">{</span>
+    updatePokemon<span class="token punctuation">(</span><span class="token attr-name">id</span><span class="token punctuation">:</span> <span class="token string">"3"</span><span class="token punctuation">,</span> <span class="token attr-name">set</span><span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token attr-name">hp</span><span class="token punctuation">:</span> <span class="token number">213123</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        id
+        hp
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>Now since all we need to be able to derive the cache key is the id and the typename we can update our cache entry with the new data!</p>
+<p>Both our query and mutation will have a reference link to our <code>Pokemon:3</code> data</p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"Pokemon:3"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"3"</span><span class="token punctuation">,</span>
+    <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Pokemon"</span><span class="token punctuation">,</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Pikachu"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token string">"ELECTRIC"</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"hp"</span><span class="token operator">:</span> <span class="token number">213123</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"ROOT_QUERY"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Query"</span><span class="token punctuation">,</span>
+    <span class="token property">"pokemon({\"type\":\"ELECTRIC\"})"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"__ref"</span><span class="token operator">:</span> <span class="token string">"Pokemon:3"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"ROOT_MUTATION"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Mutation"</span><span class="token punctuation">,</span>
+    <span class="token property">"updatePokemon({\"id\":\"3\",\"set\":{\"hp\":213123}})"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"__ref"</span><span class="token operator">:</span> <span class="token string">"Pokemon:3"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.08.02.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.08.02.png"></p>
+<p>But we must make sure that the type that the mutation returns is the same as the type that we have already requested. In this case both must be of type &#39;Pokemon&#39; so the same cache key <code>Pokemon:3</code> can be generated from the query and also separately from the mutation response data. If your team is not in charge of the schema this is why it is important to discuss any changes/proposals.</p>
+<p>Automatic cache updates are very useful when updating items that have been returned from other queries, however there are some situations where this will not happen automatically</p>
+<h2 id="non-standard-and-missing-ids">Non Standard and Missing IDS</h2>
+<p>In order to do things automatically for you Apollo assumes two things when trying to generate a cache key for your data</p>
+<ol>
+<li>Your data has an <code>ID</code> that is stored under an <code>id</code> or <code>_id</code> property</li>
+<li>Your data has a <code>__typename</code></li>
+</ol>
+<p>Point 2 you can take for granted this is handled for you in most cases and if type names are missing it is more likely to be an error in your configuration rather than an intentional decision. Point 1 we might come across in a couple of situations</p>
+<ol>
+<li>Your data uses some other property name as an id</li>
+<li>Your data has no explicit id and it doesnt make sense to give it one</li>
+</ol>
+<p>For these scenarios Apollo provides dataIdFromObject</p>
+<p>Lets take an example query</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token keyword">query</span> Pokedex <span class="token punctuation">{</span>
+  pokedex <span class="token punctuation">{</span>
+    lastSeenPokemon <span class="token punctuation">{</span>
+      <span class="token operator">...</span><span class="token fragment function">PokemonFragment</span>
+      __typename
+    <span class="token punctuation">}</span>
+    __typename
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">fragment</span> <span class="token fragment function">PokemonFragment</span> <span class="token keyword">on</span> <span class="token class-name">Pokemon</span> <span class="token punctuation">{</span>
+  name
+  <span class="token keyword">type</span>
+  <span class="token class-name">hp</span>
+  __typename
+<span class="token punctuation">}</span></code></pre><p>and the response</p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+   <span class="token property">"data"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      <span class="token property">"pokedex"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+         <span class="token property">"lastSeenPokemon"</span><span class="token operator">:</span><span class="token punctuation">{</span>
+            <span class="token property">"name"</span><span class="token operator">:</span><span class="token string">"Dragonite"</span><span class="token punctuation">,</span>
+            <span class="token property">"type"</span><span class="token operator">:</span><span class="token punctuation">[</span>
+               <span class="token string">"FIRE"</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token property">"hp"</span><span class="token operator">:</span><span class="token number">100</span><span class="token punctuation">,</span>
+            <span class="token property">"__typename"</span><span class="token operator">:</span><span class="token string">"Pokemon"</span>
+         <span class="token punctuation">}</span><span class="token punctuation">,</span>
+         <span class="token property">"__typename"</span><span class="token operator">:</span><span class="token string">"Pokedex"</span>
+      <span class="token punctuation">}</span>
+   <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>and the resulting cache representation</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token punctuation">{</span>
+  <span class="token string">"ROOT_QUERY"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"__typename"</span><span class="token punctuation">:</span> <span class="token string">"Query"</span><span class="token punctuation">,</span>
+    <span class="token string">"pokedex"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+      <span class="token string">"__typename"</span><span class="token punctuation">:</span> <span class="token string">"Pokedex"</span><span class="token punctuation">,</span>
+      <span class="token string">"lastSeenPokemon"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">"__typename"</span><span class="token punctuation">:</span> <span class="token string">"Pokemon"</span><span class="token punctuation">,</span>
+        <span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"Dragonite"</span><span class="token punctuation">,</span>
+        <span class="token string">"type"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"FIRE"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">"hp"</span><span class="token punctuation">:</span> <span class="token number">100</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.16.31.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.16.31.png"></p>
+<p>Our Pokedex data is stored under the Pokedex query. Now if we wanted to update this we would fall into a similar situation that we had previously when we had no ID. In this situation we can assume that the Pokedex query is going to serve us back the pokedex for whichever user made the request so even though the Pokedex has no intrinsic id its typename is enough to identify it.</p>
+<p>Using dataIdFromObject we can write</p>
+<pre class="code-block language-jsx"><code class="language-jsx"><span class="token keyword">const</span> dataIdFromObject<span class="token operator">:</span> <span class="token function-variable function">KeyFieldsFunction</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">object<span class="token punctuation">,</span> ctx</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+  <span class="token keyword">switch</span><span class="token punctuation">(</span>object<span class="token punctuation">.</span>__typename<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">case</span> <span class="token string">"Pokedex"</span><span class="token operator">:</span>
+      <span class="token keyword">return</span> <span class="token string">"Pokedex"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">return</span> <span class="token function">defaultDataIdFromObject</span><span class="token punctuation">(</span>object<span class="token punctuation">,</span> ctx<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre><p>and then pass it to the cache</p>
+<pre class="code-block language-jsx"><code class="language-jsx"><span class="token keyword">const</span> client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ApolloClient</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  cache<span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">InMemoryCache</span><span class="token punctuation">(</span><span class="token punctuation">{</span> dataIdFromObject <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token operator">...</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><p>This will key the Pokedex object under Pokedex and fall back to the default dataIdFromObject implementation otherwise.</p>
+<p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.23.10.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/Screenshot_2020-06-17_at_17.23.10.png"></p>
+<p>As previously we have now de coupled the Pokedex data from the query that made it. You can also use dataIdFromObject if you have non standard id names as by default Apollo Client will only look for an <code>id</code> or <code>_id</code> property name.</p>
+<h2 id="manual-cache-updates">Manual Cache Updates</h2>
+<p>Often when updates happen to things that are not concrete types (i.e. objects with a <code>__typename</code>) or a new instance of a concrete type is created we have to intervene manually for our query to update</p>
+<h3 id="updating-items-in-list-queries">Updating Items in List Queries</h3>
+<p>This is very well documented in the <a href="https://www.apollographql.com/docs/react/v2.5/advanced/caching/#updating-after-a-mutation">official docs</a></p>
+<h2 id="fragment-matching-and-strengthening-type-safety">Fragment Matching and Strengthening Type Safety</h2>
+<h3 id="type-safety-and-the-need-for-validation">Type Safety and the Need for Validation</h3>
+<p>One of the biggest advantages to GraphQL is the schema. The schema provides a language-agnostic description of;</p>
+<ol>
+<li>Every individual type of our data model</li>
+<li>The operations that can be used to fetch these types</li>
+<li>The operations that can be used to update these types</li>
+</ol>
+<p>We in the front end leverage this a lot through code generation tools. We generate types for the queries we make and use this to improve our experience as developers and prevent silly mistakes. </p>
+<p>This protection, at least in the realm of JS exists at compile time only. Meaning normally we do not have type safety at the boundaries of our program. This is why we do things like form validation.</p>
+<p><img src="../../../../../Desktop/md/GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/demons.png" alt="GraphQL%20Caching%20Fragment%20Matching%20and%20Moving%20Towar%2060e7df111be04b53986c89c4f9f0aa4e/demons.png"></p>
+<p>Well with GraphQL its very easy to validate the data that we get back from the server since we know exactly what we requested! So its trivial to validate that when we request </p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token keyword">query</span> PokedexQuery <span class="token punctuation">{</span>
+    pokedex <span class="token punctuation">{</span>
+        totalPokemonSeen
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>and receive </p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"totalPokemaaaaaaan"</span><span class="token operator">:</span> <span class="token number">123</span>
+<span class="token punctuation">}</span></code></pre><p>Something has gone terribly wrong. The same logic applies when we manually write a query or fragment to the cache we can validate the data that we want to write against our query document.</p>
+<h3 id="fragments-and-the-challenges-they-pose-to-validation">Fragments and the Challenges They Pose to Validation</h3>
+<p>Fragments simply re-usable sets of fields that allow us to avoid repeating ourselves.</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token keyword">fragment</span> <span class="token fragment function">PokedexFields</span> <span class="token keyword">on</span> <span class="token class-name">Pokedex</span> <span class="token punctuation">{</span>
+    totalPokemonSeen
+    pokeBallCount
+<span class="token punctuation">}</span>
+
+<span class="token keyword">query</span> <span class="token punctuation">{</span>
+    pokedex <span class="token punctuation">{</span>
+        <span class="token operator">...</span><span class="token fragment function">PokedexFields</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>Now say we receive the following response from the above query</p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"__typename"</span><span class="token operator">:</span> <span class="token string">"Pokedex"</span><span class="token punctuation">,</span>
+    <span class="token property">"totalPokemonSeen"</span><span class="token operator">:</span> <span class="token number">100</span><span class="token punctuation">,</span>
+    <span class="token property">"pokeBallCount"</span><span class="token operator">:</span> <span class="token number">5</span>
+<span class="token punctuation">}</span></code></pre><p>It is not as simple any more as checking each field on the response against the query as these fields have been collapsed into <code>...PokedexFields</code>  so we need to first expand this fragment.</p>
+<p>Now we could do this in a very naive fashion where we simply replace <code>...PokedexFields</code> with the fields in the fragment. But we have extra information in the form of the <code>__typename</code> that we can use to infer if this will even be successful.</p>
+<p>A fragment matcher will do this initial inference and if a match is found will allow us to expand the fragment and continue matching fields as normal.</p>
+<p>This is the basic structure of a fragment matcher. The type condition here is what type or interface the fragment is applied to, in the above example it would be <code>&quot;Pokedex&quot;</code></p>
+<pre class="code-block language-jsx"><code class="language-jsx"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">FragmentMatcherInterface</span> <span class="token punctuation">{</span>
+  <span class="token function">match</span><span class="token punctuation">(</span>
+    typeCondition<span class="token operator">:</span> string<span class="token punctuation">,</span>
+    value<span class="token operator">:</span> object<span class="token punctuation">,</span>
+  <span class="token punctuation">)</span><span class="token operator">:</span> boolean <span class="token operator">|</span> <span class="token string">'heuristic'</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre><p><strong><em>NOTE: this is a simplified view of the type signature the real signature is provided in the Additional Notes section at the end of this post</em></strong></p>
+<h3 id="heuristic-fragment-matching">Heuristic Fragment Matching</h3>
+<blockquote>
+<p>A heuristic technique, is any approach to problem solving, learning, or discovery that employs a practical method not guaranteed to be optimal or perfect, but sufficient for the immediate goals</p>
+</blockquote>
+<p>This method is very simple and is the default way of fragment matching in Apollo Client. The algorithm plays out as follows;</p>
+<pre class="code-block language-javascript"><code class="language-javascript"><span class="token keyword">if</span> value<span class="token punctuation">.</span>__typename <span class="token operator">===</span> typeCondition
+    <span class="token keyword">return</span> <span class="token boolean">true</span>
+<span class="token keyword">else</span>
+    <span class="token keyword">return</span> <span class="token string">'heuristic'</span></code></pre><p>If the types match exactly then we return true. If not we do something very peculiar, we return <code>&#39;heuristic&#39;</code> and the source explains this best</p>
+<pre class="code-block language-javascript"><code class="language-javascript"><span class="token comment">// At this point we don't know if this fragment should match or not. It's</span>
+<span class="token comment">// either:</span>
+<span class="token comment">//</span>
+<span class="token comment">// 1. (GOOD) A fragment on a matching interface or union.</span>
+<span class="token comment">// 2. (BAD) A fragment on a non-matching concrete type or interface or union.</span>
+<span class="token comment">//</span>
+<span class="token comment">// If it's 2, we don't want it to match. If it's 1, we want it to match. We</span>
+<span class="token comment">// can't tell the difference, so we warn the user, but still try to match</span>
+<span class="token comment">// it (for backwards compatibility reasons). This unfortunately means that</span>
+<span class="token comment">// using the `HeuristicFragmentMatcher` with unions and interfaces is</span>
+<span class="token comment">// very unreliable. This will be addressed in a future major version of</span>
+<span class="token comment">// Apollo Client, but for now the recommendation is to use the</span>
+<span class="token comment">// `IntrospectionFragmentMatcher` when working with unions/interfaces.</span></code></pre><p>This essentially means that if the typename is not an exact match apollo will expand it anyway and the match depends on wether all fields in the fragment exist on the object type. </p>
+<p>Wat?</p>
+<p>Lets take an example schema</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token keyword">interface</span> <span class="token class-name">Item</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">name</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Pokeball</span> <span class="token keyword">implements</span> <span class="token class-name">Item</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">name</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+    <span class="token attr-name">ballType</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> <span class="token class-name">Potion</span> <span class="token keyword">implements</span> <span class="token class-name">Item</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">name</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+    <span class="token attr-name">potionType</span><span class="token punctuation">:</span> String<span class="token operator">!</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">union</span> <span class="token class-name">Items</span> <span class="token operator">=</span> Potion <span class="token operator">|</span> Pokeball
+
+<span class="token keyword">type</span> <span class="token class-name">Query</span> <span class="token punctuation">{</span>
+    <span class="token attr-name">items</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>Items<span class="token operator">!</span><span class="token punctuation">]</span><span class="token operator">!</span>
+<span class="token punctuation">}</span></code></pre><p>and an example query</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token keyword">query</span> <span class="token punctuation">{</span>
+    items <span class="token punctuation">{</span>
+        <span class="token operator">...</span> <span class="token keyword">on</span> <span class="token class-name">Item</span> <span class="token punctuation">{</span>
+            name
+        <span class="token punctuation">}</span>
+        <span class="token operator">...</span> <span class="token keyword">on</span> <span class="token class-name">Pokeball</span> <span class="token punctuation">{</span>
+            ballType
+        <span class="token punctuation">}</span>
+        <span class="token operator">...</span> <span class="token keyword">on</span> <span class="token class-name">Potion</span> <span class="token punctuation">{</span>
+            potionType
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>and say we get the response</p>
+<pre class="code-block language-graphql"><code class="language-graphql"><span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+        <span class="token string">"__typename"</span><span class="token punctuation">:</span> <span class="token string">"Pokeball"</span><span class="token punctuation">,</span>
+        <span class="token string">"name"</span><span class="token punctuation">:</span> <span class="token string">"My First Ball"</span>
+        <span class="token string">"ballType"</span><span class="token punctuation">:</span> <span class="token string">"MASTER"</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">]</span></code></pre><p>So then lets try to match the structure of the returned object to the type we specified in the <code>items</code> query.</p>
+<ol>
+<li>We check the first fragment — <code>on Item</code><ol>
+<li>We check if the <code>__typename</code> of the data matches <code>Item</code> as declared on the fragment, it does not, but this is a heuristic method so we expand the fragment and try to match the name field, which works</li>
+</ol>
+</li>
+<li>We check the second fragment — <code>on Pokeball</code><ol>
+<li>We check if the <code>__typename</code> matches <code>Pokeball</code> as declared on the fragment. It does so we expand the fragment and match all fields without an issue</li>
+</ol>
+</li>
+<li>We check the last fragment — <code>on Potion</code><ol>
+<li>We check if the <code>__typename</code> of the data matches <code>Potion</code> as declared on the fragment. It does not. But we expand anyway and try to match the <code>potionType</code> field. It fails and causes the whole match to fail and we also get a warning in the console.</li>
+</ol>
+</li>
+</ol>
+<p>We should have never done the last check, from the schema we know that <code>Pokeball</code> and <code>Potion</code> are subtypes of <code>Item</code> and should not be matched on the same object.</p>
+<h3 id="introspective-fragment-matching">Introspective Fragment Matching</h3>
+<p>With an <code>IntrospectionFragmentMatcher</code> we provide the schema as JSON and with this information we construct the following map which describes the relationship between interfaces and their implementing types, this is called the <code>possibleTypes</code> map</p>
+<pre class="code-block language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">"Item"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"Pokeball"</span><span class="token punctuation">,</span> <span class="token string">"Potion"</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre><p>The introspective matching algorithm goes as follows</p>
+<pre class="code-block language-javascript"><code class="language-javascript">create possibleTypes map <span class="token keyword">from</span> introspection result <span class="token constant">JSON</span>
+
+<span class="token keyword">if</span> value<span class="token punctuation">.</span>__typename <span class="token operator">===</span> typeCondition
+    <span class="token keyword">return</span> <span class="token boolean">true</span>
+<span class="token keyword">else</span> <span class="token keyword">if</span> possibleTypes<span class="token punctuation">[</span>typeCondition<span class="token punctuation">]</span> contains value<span class="token punctuation">.</span>__typename
+    <span class="token keyword">return</span> <span class="token boolean">true</span>
+<span class="token keyword">else</span>
+    <span class="token keyword">return</span> <span class="token boolean">false</span></code></pre><p>So lets run through that previous example again and see what the out come is</p>
+<ol>
+<li>We check the first fragment — <code>on Item</code><ol>
+<li>We check if the <code>__typename</code> of the data matches <code>Item</code> as declared on the fragment, it does not, <strong>we then check if <code>possibleTypes[Item]</code> contains <code>Pokeball</code> it does, so we can match fields</strong></li>
+</ol>
+</li>
+<li>We check the second fragment — <code>on Pokeball</code><ol>
+<li>We check if the <code>__typename</code> matches <code>Pokeball</code> as declared on the fragment. It does so we expand the fragment and match all fields without an issue</li>
+</ol>
+</li>
+<li>We check the last fragment — <code>on Potion</code><ol>
+<li>We check if the <code>__typename</code> of the data matches <code>Potion</code> as declared on the fragment. It does not. <strong>we then check if <code>possibleTypes[Potion]</code> contains <code>Pokeball</code> it does not, so we return false and avoid expanding the fragment <code>... on Potion</code></strong></li>
+</ol>
+</li>
+</ol>
+<p>Which results in relevant fragments being matched and irrelevant ones being ignored</p>
+<h1 id="apollo-client-30">Apollo Client 3.0</h1>
+<h2 id="project-structure-updates">Project Structure Updates</h2>
+<p>Apollo used to be made up of several very independent packages which had to be imported separately for example </p>
+<pre class="code-block language-jsx"><code class="language-jsx"><span class="token keyword">import</span> gql <span class="token keyword">from</span> <span class="token string">'graphql-tag'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> useQuery <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@apollo/react-hooks'</span><span class="token punctuation">;</span></code></pre><p>However now these are all imported from the <code>@apollo/client</code> package</p>
+<pre class="code-block language-jsx"><code class="language-jsx"><span class="token keyword">import</span> <span class="token punctuation">{</span> gql<span class="token punctuation">,</span> useQuery<span class="token punctuation">,</span> ApolloClient<span class="token punctuation">,</span> InMemoryCache <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@apollo/client'</span></code></pre><h2 id="updates-to-the-cache">Updates to the Cache</h2>
+<h3 id="the-new-possibletypes-configuration">The New possibleTypes Configuration</h3>
+<p>The main change in the client configuration comes from the fact that the included fragment matchers have been removed in favour of passing a possible types map. This was something that was generated inside the client previously, based on the introspection schema. Now it needs to be generated outside. </p>
+<p>Based on Apollo 2.6.8 this function can be used to generate the appropriate map. Although there may be better solutions, for example <code>graphql-codegen</code></p>
+<pre class="code-block language-jsx"><code class="language-jsx"><span class="token keyword">private</span> <span class="token function">parseIntrospectionResult</span><span class="token punctuation">(</span>
+    introspectionResultData<span class="token operator">:</span> IntrospectionResultData<span class="token punctuation">,</span>
+  <span class="token punctuation">)</span><span class="token operator">:</span> PossibleTypesMap <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> typeMap<span class="token operator">:</span> PossibleTypesMap <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    introspectionResultData<span class="token punctuation">.</span>__schema<span class="token punctuation">.</span>types<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">type</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>type<span class="token punctuation">.</span>kind <span class="token operator">===</span> <span class="token string">'UNION'</span> <span class="token operator">||</span> type<span class="token punctuation">.</span>kind <span class="token operator">===</span> <span class="token string">'INTERFACE'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        typeMap<span class="token punctuation">[</span>type<span class="token punctuation">.</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> type<span class="token punctuation">.</span>possibleTypes<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>
+          <span class="token parameter">implementingType</span> <span class="token operator">=></span> implementingType<span class="token punctuation">.</span>name<span class="token punctuation">,</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> typeMap<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span></code></pre><p>Apollo also provide a script that will fetch the schema in their docs <a href="https://www.apollographql.com/docs/react/v3.0-beta/data/fragments/#generating-possibletypes-automatically">here</a></p>
+<h3 id="cache-eviction">Cache Eviction</h3>
+<p><code>cache.evict(id, field?)</code></p>
+<p>Remove a specific item from the cache based on its cache key</p>
+<h3 id="garbage-collection">Garbage Collection</h3>
+<p><code>cache.gc()</code></p>
+<p>This new method will allow you to purge anything from the cache that is unreachable from the root objects in the cache (<code>ROOT_QUERY</code> <code>ROOT_MUTATION</code>)</p>
+<p><code>cache.retain(id)</code></p>
+<p>Another new method that prevents an object being removed from the cache even if it is unreachable from known roots.</p>
+<p><code>cache.release(id)</code></p>
+<p>Basically reverses the retain operation and makes the previously retained object eligible to be garbage collected again.</p>
+<h1 id="in-conclusion">In Conclusion</h1>
+<p>The main take aways are </p>
+<ul>
+<li>Ensure involvement in schema changes to make sure that automatic updates can be leveraged as much as possible</li>
+<li>Upgrade path to Apollo 3 should be smooth but will require a change to generate <code>possibleTypes</code> map</li>
+<li>Leverage <code>dataIdFromObject</code> if your data has non standard ids or is user specific data that has no id at all.</li>
+<li>Your data is a graph. The cache is a graph where data, queries and mutations are the nodes</li>
+</ul>
+<h1 id="additional-resources">Additional Resources</h1>
+<ul>
+<li><a href="https://www.apollographql.com/blog/the-concepts-of-graphql-bc68bd819be3">The Concepts of GraphQL - apollographql.com</a></li>
+<li><a href="https://stackoverflow.com/questions/41743253/whats-the-point-of-input-type-in-graphql">Why is there a separate input type? - stackoverflow.com</a></li>
+<li><a href="https://github.com/apollographql/apollo-client/blob/v3.0.0-rc.0/CHANGELOG.md">Full Apollo Client 3.0 changelog - github.com</a></li>
+<li><a href="https://www.apollographql.com/docs/react/v3.0-beta/caching/cache-interaction/#garbage-collection-and-cache-eviction">Cache Eviction in Apollo Client 3.0 - apollographql.com</a></li>
+<li><a href="https://github.com/apollographql/apollo-client/pull/5146">Reasoning behind no longer generating query path ids for non normalised objects - github.com</a></li>
+</ul>
+
+        </div>
+
+        <ul class="post-grid post-grid--post-page">
+                <li class="post">
+                    <img
+                            loading="lazy"
+                            alt=""
+                            class="post__background-image"
+                            src="https://i.imgur.com/XdXW24O.png"
+                            srcset="https://i.imgur.com/AfBYazN.png, https://i.imgur.com/iujKDxG.png 2x"
+                    />
+                    <img
+                            loading="lazy"
+                            alt=""
+                            class="post__background-image post__background-image--aberrated"
+                            src="https://i.imgur.com/XdXW24O.png"
+                            srcset="https://i.imgur.com/AfBYazN.png, https://i.imgur.com/iujKDxG.png 2x"
+                    />
+                    <div style="background-color: #5A5CAA;" class="post__gradient-overlay" ></div>
+                    <div class="post__content">
+                        <p class="post__date">Jun 16, 2020</p>
+                        <h2 class="post__title">
+                            flow&#x27;s type inference quirk
+                        </h2>
+                    </div>
+                    <a class="post__link" href="/flow-type-inference-quirk-vs-typescript.html"></a>
+                </li>
+                <li class="post">
+                    <img
+                            loading="lazy"
+                            alt=""
+                            class="post__background-image"
+                            src="https://i.imgur.com/XdXW24O.png"
+                            srcset="https://i.imgur.com/XdXW24O.png, https://i.imgur.com/JgUY3B6.png 2x"
+                    />
+                    <img
+                            loading="lazy"
+                            alt=""
+                            class="post__background-image post__background-image--aberrated"
+                            src="https://i.imgur.com/XdXW24O.png"
+                            srcset="https://i.imgur.com/XdXW24O.png, https://i.imgur.com/JgUY3B6.png 2x"
+                    />
+                    <div style="background-color: #AA5A96;" class="post__gradient-overlay" ></div>
+                    <div class="post__content">
+                        <p class="post__date">Jun 6, 2018</p>
+                        <h2 class="post__title">
+                            thinking about intersections and unions in type theory
+                        </h2>
+                    </div>
+                    <a class="post__link" href="/mental-model-intersections-unions-type-theory.html"></a>
+                </li>        </ul>
+
+
+    </body>
+</html>

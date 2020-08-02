@@ -97,6 +97,20 @@ const getExtraMetaDataProps = (meta) => {
         formattedDate: new Date(meta.publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
     };
 };
+const generateExtraPages = (config, pages, cwd = process.cwd()) => {
+    pages.forEach(pageConf => {
+        const indexTemplatePath = path_1.default.join(cwd, pageConf.template);
+        const indexTemplate = fs_1.default.readFileSync(indexTemplatePath).toString();
+        const compiledIndex = handlebars_1.default.compile(indexTemplate);
+        const stylesPath = path_1.default.join(cwd, pageConf.stylesheet);
+        const model = {
+            styles: helpers_1.compileSass(stylesPath),
+        };
+        const html = compiledIndex(model);
+        const outPath = path_1.default.resolve(cwd, config.properties.output.directory, `${pageConf.slug}.html`);
+        fs_1.default.writeFileSync(outPath, html);
+    });
+};
 const generateIndex = (config, posts, cwd = process.cwd()) => {
     const indexTemplatePath = path_1.default.join(cwd, config.properties.templates.index);
     const indexTemplate = fs_1.default.readFileSync(indexTemplatePath).toString();
@@ -131,6 +145,9 @@ try {
         return bPubDate - aPubDate;
     });
     generateIndex(cfg, metadata);
+    if (cfg.properties.extra) {
+        generateExtraPages(cfg, cfg.properties.extra);
+    }
 }
 catch (e) {
     console.log('Something went wrong take a look at .stationary.log for more detail');
