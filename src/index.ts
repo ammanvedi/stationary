@@ -17,8 +17,7 @@ import Prism from 'prismjs'
 import Handlebars from 'handlebars';
 // @ts-ignore
 import loadLanguages from 'prismjs/components/';
-import {compileSass} from "./helpers";
-loadLanguages(['graphql', 'typescript', 'javascript', 'jsx', 'tsx', 'json'])
+import {compileSass} from "./helpers";loadLanguages(['graphql', 'typescript', 'javascript', 'jsx', 'tsx', 'json', 'purescript', 'json'])
 
 const writeError = (e: Error) => {
     const errorPath = path.join(process.cwd(), '.stationary.log');
