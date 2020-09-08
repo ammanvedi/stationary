@@ -1,0 +1,623 @@
+<html lang="en">
+    <head>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <title>an adventure in weighted binary similarity</title>
+        <link rel="stylesheet" href="https://rawgit.com/PrismJS/prism-themes/master/themes/prism-duotone-earth.css" />
+        <style>
+                /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+/* Document
+   ========================================================================== */
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;600&display=swap");
+html {
+  line-height: 1.15;
+  /* 1 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */ }
+
+/* Sections
+   ========================================================================== */
+/**
+ * Remove the margin in all browsers.
+ */
+body {
+  margin: 0; }
+
+/**
+ * Render the `main` element consistently in IE.
+ */
+main {
+  display: block; }
+
+/**
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0; }
+
+/* Grouping content
+   ========================================================================== */
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+hr {
+  box-sizing: content-box;
+  /* 1 */
+  height: 0;
+  /* 1 */
+  overflow: visible;
+  /* 2 */ }
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+pre {
+  font-family: monospace, monospace;
+  /* 1 */
+  font-size: 1em;
+  /* 2 */ }
+
+/* Text-level semantics
+   ========================================================================== */
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+a {
+  background-color: transparent; }
+
+/**
+ * 1. Remove the bottom border in Chrome 57-
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+abbr[title] {
+  border-bottom: none;
+  /* 1 */
+  text-decoration: underline;
+  /* 2 */
+  text-decoration: underline dotted;
+  /* 2 */ }
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+b,
+strong {
+  font-weight: bolder; }
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+code,
+kbd,
+samp {
+  font-family: monospace, monospace;
+  /* 1 */
+  font-size: 1em;
+  /* 2 */ }
+
+/**
+ * Add the correct font size in all browsers.
+ */
+small {
+  font-size: 80%; }
+
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline; }
+
+sub {
+  bottom: -0.25em; }
+
+sup {
+  top: -0.5em; }
+
+/* Embedded content
+   ========================================================================== */
+/**
+ * Remove the border on images inside links in IE 10.
+ */
+img {
+  border-style: none; }
+
+/* Forms
+   ========================================================================== */
+/**
+ * 1. Change the font styles in all browsers.
+ * 2. Remove the margin in Firefox and Safari.
+ */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  /* 1 */
+  font-size: 100%;
+  /* 1 */
+  line-height: 1.15;
+  /* 1 */
+  margin: 0;
+  /* 2 */ }
+
+/**
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
+ */
+button,
+input {
+  /* 1 */
+  overflow: visible; }
+
+/**
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
+button,
+select {
+  /* 1 */
+  text-transform: none; }
+
+/**
+ * Correct the inability to style clickable types in iOS and Safari.
+ */
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button; }
+
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0; }
+
+/**
+ * Restore the focus styles unset by the previous rule.
+ */
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  outline: 1px dotted ButtonText; }
+
+/**
+ * Correct the padding in Firefox.
+ */
+fieldset {
+  padding: 0.35em 0.75em 0.625em; }
+
+/**
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
+legend {
+  box-sizing: border-box;
+  /* 1 */
+  color: inherit;
+  /* 2 */
+  display: table;
+  /* 1 */
+  max-width: 100%;
+  /* 1 */
+  padding: 0;
+  /* 3 */
+  white-space: normal;
+  /* 1 */ }
+
+/**
+ * Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
+progress {
+  vertical-align: baseline; }
+
+/**
+ * Remove the default vertical scrollbar in IE 10+.
+ */
+textarea {
+  overflow: auto; }
+
+/**
+ * 1. Add the correct box sizing in IE 10.
+ * 2. Remove the padding in IE 10.
+ */
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box;
+  /* 1 */
+  padding: 0;
+  /* 2 */ }
+
+/**
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto; }
+
+/**
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
+[type="search"] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  outline-offset: -2px;
+  /* 2 */ }
+
+/**
+ * Remove the inner padding in Chrome and Safari on macOS.
+ */
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none; }
+
+/**
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  /* 1 */
+  font: inherit;
+  /* 2 */ }
+
+/* Interactive
+   ========================================================================== */
+/*
+ * Add the correct display in Edge, IE 10+, and Firefox.
+ */
+details {
+  display: block; }
+
+/*
+ * Add the correct display in all browsers.
+ */
+summary {
+  display: list-item; }
+
+/* Misc
+   ========================================================================== */
+/**
+ * Add the correct display in IE 10+.
+ */
+template {
+  display: none; }
+
+/**
+ * Add the correct display in IE 10.
+ */
+[hidden] {
+  display: none; }
+
+.post-grid {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+  align-items: stretch; }
+  .post-grid .post {
+    flex: 0 1 100%; }
+    @media screen and (min-width: 460px) {
+      .post-grid .post {
+        flex: 1 1 40%; } }
+  @media screen and (min-width: 768px) {
+    .post-grid--post-page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 10px 0 80px; } }
+
+html {
+  background-color: #efefef;
+  font-size: 10px; }
+
+* {
+  box-sizing: border-box; }
+
+.post {
+  min-height: 184px;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #FFD4D4;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.24), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  transition: .2s ease-out transform;
+  margin: 10px; }
+  .post:hover, .post:focus, .post:focus-within {
+    transform: translateY(-3px); }
+    .post:hover .post__background-image, .post:focus .post__background-image, .post:focus-within .post__background-image {
+      opacity: 0; }
+    .post:hover .post__title, .post:focus .post__title, .post:focus-within .post__title {
+      text-decoration: underline; }
+    .post:hover .post__background-image--aberrated, .post:focus .post__background-image--aberrated, .post:focus-within .post__background-image--aberrated {
+      opacity: 1; }
+  .post__link, .post__background-image, .post__gradient-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0; }
+  .post__link {
+    display: block;
+    cursor: pointer;
+    z-index: 3; }
+  .post__background-image, .post__gradient-overlay {
+    z-index: 1; }
+  .post__content {
+    position: relative;
+    padding: 16px;
+    z-index: 2; }
+  .post__background-image {
+    object-fit: cover;
+    object-position: bottom left;
+    width: 100%;
+    height: 100%;
+    transition: .2s ease-out opacity;
+    opacity: 1; }
+    .post__background-image--aberrated {
+      opacity: 0;
+      -webkit-filter: url(#abb); }
+  .post__gradient-overlay {
+    background-color: #AA5A96;
+    opacity: .46; }
+  .post__date, .post__title {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    color: #fff; }
+  .post__date {
+    margin: 0;
+    font-size: 1.3rem;
+    opacity: .75;
+    line-height: 1.4; }
+  .post__title {
+    margin-top: 14px;
+    line-height: 1.35;
+    font-size: 2.1rem; }
+
+.code-block {
+  padding: 20px !important;
+  border-radius: 4px !important;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.24), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); }
+  @media screen and (min-width: 768px) {
+    .code-block {
+      padding: 30px !important;
+      border-radius: 14px !important; } }
+
+.blog-post {
+  max-width: 680px;
+  color: #212121;
+  padding: 16px;
+  margin: 0 auto; }
+  @media screen and (min-width: 768px) {
+    .blog-post {
+      padding: 0;
+      margin: 50px auto 0; } }
+  .blog-post h1 {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    font-size: 3rem;
+    letter-spacing: -.58px;
+    line-height: 1.3; }
+    @media screen and (min-width: 768px) {
+      .blog-post h1 {
+        font-size: 3.6rem;
+        letter-spacing: -.7px;
+        line-height: 1.3; } }
+    @media screen and (min-width: 768px) {
+      .blog-post h1:first-child {
+        font-size: 4rem;
+        letter-spacing: -.7px;
+        line-height: 1.4; } }
+  .blog-post code:not([class^='language-']) {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1px 3px 2px;
+    border-radius: 4px; }
+  .blog-post h2 {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    font-size: 2.3rem;
+    letter-spacing: -.45px;
+    line-height: 1.39; }
+    @media screen and (min-width: 768px) {
+      .blog-post h2 {
+        font-size: 2.7rem;
+        letter-spacing: -.53px;
+        line-height: 1.18; } }
+  .blog-post h3 {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+    font-size: 2.3rem;
+    letter-spacing: -.45px;
+    line-height: 1.39;
+    opacity: .6; }
+    @media screen and (min-width: 768px) {
+      .blog-post h3 {
+        font-size: 2.3rem;
+        letter-spacing: -.45px;
+        line-height: 1.4; } }
+  .blog-post blockquote {
+    padding: 0 32px;
+    margin: 0;
+    border-left: 6px solid #f9c1049e; }
+    .blog-post blockquote p {
+      font-size: 2.1rem;
+      font-style: italic;
+      margin: 0; }
+  .blog-post p,
+  .blog-post ul,
+  .blog-post li,
+  .blog-post a,
+  .blog-post a:visited,
+  .blog-post a:-webkit-any-link {
+    opacity: .9;
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+    font-size: 1.8rem;
+    color: #212121;
+    letter-spacing: .5px; }
+    @media screen and (min-width: 768px) {
+      .blog-post p,
+      .blog-post ul,
+      .blog-post li,
+      .blog-post a,
+      .blog-post a:visited,
+      .blog-post a:-webkit-any-link {
+        line-height: 2;
+        font-size: 2.1rem; } }
+  .blog-post code {
+    line-height: 1.6;
+    font-size: 1.8rem; }
+    @media screen and (min-width: 768px) {
+      .blog-post code {
+        line-height: 1.5;
+        font-size: 2.1rem; } }
+  .blog-post img {
+    width: 100%;
+    border-radius: 4px; }
+
+        </style>
+    </head>
+    <body>
+        <div class="blog-post">
+            <h1 id="an-adventure-in-weighted-binary-similarity">An Adventure in Weighted Binary Similarity</h1>
+<p>In a recent side project I have come across the need to measure the similarity between a pair of binary numbers. For example given the pair;</p>
+<pre class="code-block language-javascript"><code class="language-javascript"><span class="token number">0</span> <span class="token number">0</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">0</span>
+<span class="token number">1</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">0</span></code></pre><p>I would like a number either indicating how similar or how different they are. There are a plethora of ways that exist to measure this at the moment. Quite a few of which can be found in this excellent paper;</p>
+<blockquote>
+<p><a href="http://www.iiisci.org/journal/CV$/sci/pdfs/GS315JG.pdf">A Survey of Binary Similarity and Distance Measures</a> — Seung-Seok Choi, Sung-Hyuk Cha, Charles C. Tappert</p>
+</blockquote>
+<p>By first converting the comparison into a set of intrinsic parameters they then define a total of 72 existing methods for combining these parameters in order to measure similarity. However all of these methods consider the binary numbers in their totality, that is the positioning of sections that are similar to each other have no bearing on the final similarity.</p>
+<p>In my use case the binary numbers are representations of time-series events so from left to right we are proceeding in time</p>
+<pre class="code-block language-javascript"><code class="language-javascript"><span class="token number">0</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">1</span>
+<span class="token comment">// -----> Time</span></code></pre><p>And when comparing similarity with another value i would like to bias towards values that match more on the right than the left, for example, given the original sequence A and to comparisons with it B and C;</p>
+<pre class="code-block language-javascript"><code class="language-javascript"><span class="token constant">A</span> <span class="token operator">|</span> <span class="token number">0</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token comment">// original</span>
+<span class="token constant">B</span> <span class="token operator">|</span> <span class="token number">0</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">0</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">0</span>
+<span class="token constant">C</span> <span class="token operator">|</span> <span class="token number">1</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">1</span> <span class="token number">1</span> <span class="token number">1</span> <span class="token number">0</span> <span class="token number">1</span>
+<span class="token comment">// -----> Time </span></code></pre><p>When you do not take into account the temoral aspect of my data the similarity of B and C when compared with A is the same, they both have a 50% match with A. However I would like C to win since temporally it matches more recently than B</p>
+<p>For this I need to introduce some sort of bias or weighting, before that lets clarify exactly how we should do that;</p>
+<h3 id="weighting-functions">Weighting Functions</h3>
+<p>Lets say we have a list of items <code>[x1..xn]</code> function <code>f(x)</code> a bias is applied in situations where the final result is a combination of this function mapped over the terms in our list, for example if we take the function, apply it to each element and sum the results;</p>
+<p>$$\sum_{i=1}^{n} f(x_{i})$$</p>
+<p>Our weighting will allow us to change the contribution that a particular term makes to the whole, it takes the form of a function <code>w(x)</code> that takes in some parameters about the current term, for example it could be just the term itself, the index or anything you feel like. Based on this it returns a value to multiply the current term by, thus increasing or decreasing the corresponding value of <code>f(x)</code></p>
+<p>$$\sum_{i=1}^{n} w(x_{i})f(x_{i})$$</p>
+<h3 id="picking-a-base-function">Picking a Base Function</h3>
+<p>To act as <code>f(x)</code> in the above equations i&#39;m going to pick the <a href="https://en.wikipedia.org/wiki/Hamming_distance">Hamming Distance</a> algorithm. It is very simple;</p>
+<blockquote>
+<p>The Hamming distance between two equal-length strings of symbols is the number of positions at which the corresponding symbols are different.</p>
+</blockquote>
+<p>and in code;</p>
+<pre class="code-block language-purescript"><code class="language-purescript"><span class="token hvariable">hammingDistance</span> <span class="token operator">::</span> <span class="token constant">Array</span> <span class="token constant">Int</span> <span class="token operator">-></span> <span class="token constant">Array</span> <span class="token constant">Int</span> <span class="token operator">-></span> <span class="token constant">Int</span>
+<span class="token hvariable">hammingDistance</span> <span class="token hvariable">xs</span> <span class="token hvariable">ys</span> <span class="token operator">=</span> 
+  <span class="token hvariable">foldl</span> <span class="token punctuation">(</span><span class="token operator">\</span><span class="token hvariable">acc</span> <span class="token punctuation">(</span><span class="token constant">Tuple</span> <span class="token hvariable">a</span> <span class="token hvariable">b</span><span class="token punctuation">)</span> <span class="token operator">-></span> 
+      <span class="token keyword">if</span> <span class="token hvariable">a</span> <span class="token operator">/=</span> <span class="token hvariable">b</span> 
+        <span class="token keyword">then</span> <span class="token punctuation">(</span><span class="token hvariable">acc</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> 
+        <span class="token keyword">else</span> <span class="token hvariable">acc</span>
+    <span class="token punctuation">)</span> <span class="token number">0</span> <span class="token punctuation">(</span><span class="token hvariable">zip</span> <span class="token hvariable">xs</span> <span class="token hvariable">ys</span></code></pre><h3 id="designing-the-weight-function">Designing the Weight Function</h3>
+<p>Remembering my use case I want the matches that appear towards the end of the binary number to be weighted heavier than values earlier in the string, I would like my weight function to look like this;</p>
+<p><img src="https://i.imgur.com/gdYMUCK.png" alt="https://i.imgur.com/gdYMUCK.png"></p>
+<p>In order to construct this beast we will need to combine a couple of functions, but first lets define some variables</p>
+<p><code>wDelta</code> = the increase on top of <code>wMin</code> that the function will reach by the last term (i.e the highest point of the function)</p>
+<p><code>wMin</code>= the minimum weight multiple</p>
+<p><code>n</code>= the length of the binary sequence</p>
+<p>Using these we can construct a simple line equation;</p>
+<img align="center" src="https://i.imgur.com/WtvuRH9.png" />
+
+
+<p><img src="https://i.imgur.com/M2wKRaQ.png" alt="A simple linear function"></p>
+<p>Giving a line that slowly increases from 1 to 1.5 over the course of the length of the string (<code>n=10</code> in this graphic)</p>
+<p>Lets then deal with the little hockey stick upturn we want at the end, for this we can use the exponential  function translated a little along the x axis</p>
+<img align="center" src="https://i.imgur.com/N5ZYydU.png" />
+<br/>
+<br/>
+
+<p><img src="https://i.imgur.com/AwDqkME.png" alt="An exponential function"></p>
+<p>And by squishing these together we get the function</p>
+<img align="center" src="https://i.imgur.com/GdpUrCt.png" />
+
+<p><img src="https://i.imgur.com/GdpUrCt.png" alt="Combination Function"></p>
+<p><img src="https://i.imgur.com/Q9Ym9DU.png" alt="Combination of both functions"></p>
+<h3 id="translating-to-code">Translating to Code</h3>
+<p>We can first create our weight function exactly as described above</p>
+<pre class="code-block language-purescript"><code class="language-purescript"><span class="token hvariable">e</span> <span class="token operator">::</span> <span class="token constant">Number</span>
+<span class="token hvariable">e</span> <span class="token operator">=</span> <span class="token number">2.718</span>
+
+<span class="token hvariable">weightFunction</span> <span class="token operator">::</span> <span class="token constant">Number</span> <span class="token operator">-></span> <span class="token constant">Number</span> <span class="token operator">-></span> <span class="token constant">Number</span> <span class="token operator">-></span> <span class="token constant">Number</span> <span class="token operator">-></span> <span class="token constant">Number</span>
+<span class="token hvariable">weightFunction</span> <span class="token hvariable">wDelta</span> <span class="token hvariable">n</span> <span class="token hvariable">wMin</span> <span class="token hvariable">x</span> <span class="token operator">=</span>
+  <span class="token hvariable">linearTerm</span> <span class="token operator">+</span> <span class="token hvariable">expTerm</span>
+  <span class="token keyword">where</span>
+    <span class="token hvariable">linearTerm</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token hvariable">wDelta</span> <span class="token operator">/</span> <span class="token hvariable">n</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token hvariable">x</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token hvariable">wMin</span>
+    <span class="token hvariable">expTerm</span> <span class="token operator">=</span> <span class="token hvariable">pow</span> <span class="token hvariable">e</span> <span class="token punctuation">(</span><span class="token hvariable">x</span> <span class="token operator">-</span> <span class="token hvariable">n</span><span class="token punctuation">)</span></code></pre><p>And now create a new version of the hammingDistance function that instead of adding one for each position that is found to be different, will add one multiplied by the result of the weighting function. </p>
+<p>This means that if values are found to be different towards the end of the string they will contribute more to the final result and as such will increase the resulting hamming distance.</p>
+<pre class="code-block language-purescript"><code class="language-purescript"><span class="token hvariable">hammingDistanceWeighted</span> <span class="token operator">::</span> <span class="token constant">Array</span> <span class="token constant">Int</span> <span class="token operator">-></span> <span class="token constant">Array</span> <span class="token constant">Int</span> <span class="token operator">-></span> <span class="token constant">Number</span>
+<span class="token hvariable">hammingDistanceWeighted</span> <span class="token hvariable">xs</span> <span class="token hvariable">ys</span> <span class="token operator">=</span> 
+  <span class="token hvariable">foldlWithIndex</span> <span class="token punctuation">(</span><span class="token operator">\</span><span class="token hvariable">i</span> <span class="token hvariable">acc</span> <span class="token punctuation">(</span><span class="token constant">Tuple</span> <span class="token hvariable">a</span> <span class="token hvariable">b</span><span class="token punctuation">)</span> <span class="token operator">-></span> 
+      <span class="token keyword">if</span> <span class="token hvariable">a</span> <span class="token operator">/=</span> <span class="token hvariable">b</span> 
+        <span class="token keyword">then</span> <span class="token punctuation">(</span><span class="token hvariable">acc</span> <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token number">1.0</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token hvariable">weightFn</span> <span class="token operator">$</span> <span class="token hvariable">toNumber</span> <span class="token hvariable">i</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+        <span class="token keyword">else</span> <span class="token hvariable">acc</span>
+    <span class="token punctuation">)</span> <span class="token number">0.0</span> <span class="token punctuation">(</span><span class="token hvariable">zip</span> <span class="token hvariable">xs</span> <span class="token hvariable">ys</span><span class="token punctuation">)</span>
+    <span class="token keyword">where</span>
+      <span class="token hvariable">arrLen</span> <span class="token operator">=</span> <span class="token hvariable">toNumber</span> <span class="token operator">$</span> <span class="token hvariable">length</span> <span class="token hvariable">xs</span>
+      <span class="token hvariable">weightFn</span> <span class="token operator">=</span> <span class="token hvariable">weightFunction</span> <span class="token number">0.25</span> <span class="token hvariable">arrLen</span> <span class="token number">1.0</span></code></pre><h3 id="evaluation">Evaluation</h3>
+<p>Lets look back to the original example under the basic Hamming Distance </p>
+Snippet needs language added!!!!<p>And the results using the weighted function</p>
+Snippet needs language added!!!!<p>As we can see now, the string <code>C</code> has a smaller hamming distance which was the aim all along, using this weighting I can now distinguish based on time the difference between binary strings that otherwise have the same base hamming distance.</p>
+<p>This code will be used in a little library I am working on called <a href="https://github.com/ammanvedi/teller">Teller</a> where I am attempting to output descriptions of trends found in bank transaction data.</p>
+<h3 id="links">Links</h3>
+<p><a href="https://try.purescript.org/?session=8432f0cc-8025-e242-1afc-4f707875c52f">Full Code Example</a></p>
+<p><a href="https://github.com/ammanvedi/teller">Teller</a></p>
+
+        </div>
+
+        <ul class="post-grid post-grid--post-page">
+                <li class="post">
+                    <img
+                            loading="lazy"
+                            alt=""
+                            class="post__background-image"
+                            src="https://i.imgur.com/XdXW24O.png"
+                            srcset="https://i.imgur.com/XdXW24O.png, https://i.imgur.com/JgUY3B6.png 2x"
+                    />
+                    <img
+                            loading="lazy"
+                            alt=""
+                            class="post__background-image post__background-image--aberrated"
+                            src="https://i.imgur.com/XdXW24O.png"
+                            srcset="https://i.imgur.com/XdXW24O.png, https://i.imgur.com/JgUY3B6.png 2x"
+                    />
+                    <div style="background-color: #AA5A96;" class="post__gradient-overlay" ></div>
+                    <div class="post__content">
+                        <p class="post__date">Jun 6, 2018</p>
+                        <h2 class="post__title">
+                            thinking about intersections and unions in type theory
+                        </h2>
+                    </div>
+                    <a class="post__link" href="/mental-model-intersections-unions-type-theory.html"></a>
+                </li>
+        </ul>
+
+
+    </body>
+</html>

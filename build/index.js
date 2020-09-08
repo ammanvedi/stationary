@@ -13,7 +13,7 @@ const handlebars_1 = __importDefault(require("handlebars"));
 // @ts-ignore
 const components_1 = __importDefault(require("prismjs/components/"));
 const helpers_1 = require("./helpers");
-components_1.default(['graphql', 'typescript', 'javascript', 'jsx', 'tsx', 'json']);
+components_1.default(['graphql', 'typescript', 'javascript', 'jsx', 'tsx', 'json', 'purescript']);
 const writeError = (e) => {
     const errorPath = path_1.default.join(process.cwd(), '.stationary.log');
     fs_1.default.writeFileSync(errorPath, e.toString());
