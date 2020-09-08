@@ -1,8 +1,12 @@
+<img src="https://badge.fury.io/js/stationary-md.svg" />
+
 # Stationary
 
 Stationary is a dead simple tool to generate a static blog from markdown files. Its aims are to be;
 - Simple to configure
 - Simple to style
+
+`npm install -g stationary-md`
 
 ## Config
 

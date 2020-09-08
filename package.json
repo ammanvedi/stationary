@@ -1,12 +1,12 @@
 {
   "name": "stationary-md",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Static site generator that takes markdown as input",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc && chmod +x build/index.js",
     "mock": "cd test && node ../build/index.js",
-    "serve-mock": "cd test/_generated && python -m SimpleHTTPServer 6003"
+    "serve-mock": "cd test/_example && python -m SimpleHTTPServer 6003"
   },
   "bin": {
     "stationary": "./build/index.js"
@@ -18,7 +18,7 @@
     "js-yaml": "^3.14.0",
     "marked": "^1.1.0",
     "node-sass": "^4.14.1",
-    "prismjs": "^1.20.0"
+    "prismjs": "https://github.com/PrismJS/prism.git#f62ca78790930befa8df6858b3697846455a64d4"
   },
   "devDependencies": {
     "@types/handlebars": "^4.1.0",
