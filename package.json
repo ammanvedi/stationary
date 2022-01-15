@@ -16,7 +16,7 @@
   "dependencies": {
     "handlebars": "^4.7.6",
     "js-yaml": "^3.14.0",
-    "marked": "^1.1.0",
+    "marked": "^4.0.10",
     "node-sass": "^4.14.1",
     "prismjs": "https://github.com/PrismJS/prism.git#f62ca78790930befa8df6858b3697846455a64d4"
   },
